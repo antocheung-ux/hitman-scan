@@ -71,12 +71,18 @@ h1,h2,h3,h4,.font-display{ font-family:'Rajdhani',sans-serif; }
 @media (min-width:640px){ .show-sm-block{ display:block; } }
 .mobile-nav-strip{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
 @media (min-width:1024px){ .mobile-nav-strip{ display:none; } }
-#reader video{ width: 100% !important; min-height: 240px !important; height: auto !important; max-height: 400px; object-fit: cover; border-radius: 0.75rem; display: block !important; background: #000; }
+#reader{ position:relative; width:100%; min-height:260px; background:#000; border-radius:0.75rem; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+#reader video{ width:100% !important; height:auto !important; min-height:260px; max-height:400px; object-fit:cover; display:block; background:#000; }
+#reader__scan_region{ min-height:260px !important; }
 #reader img{ max-width: 100%; height: auto; }
 #reader__dashboard_section{ display: block !important; }
 #reader__dashboard_section_csr button{ background: #047857 !important; color: white !important; border-radius: 0.5rem !important; padding: 0.5rem 1rem !important; font-weight: bold !important; }
-#reader__scan_region{ min-height: 240px; display: flex; align-items: center; justify-content: center; background: #0f172a; border-radius: 0.75rem; }
-#reader__scan_region video{ width: 100% !important; min-height: 240px !important; height: auto !important; }
+.scan-overlay{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:220px; height:220px; border:3px solid rgba(16,185,129,0.8); border-radius:12px; box-shadow:0 0 0 9999px rgba(0,0,0,0.4); pointer-events:none; z-index:5; }
+.scan-overlay::before, .scan-overlay::after{ content:''; position:absolute; width:30px; height:30px; border:3px solid #10b981; }
+.scan-overlay::before{ top:-3px; left:-3px; border-right:0; border-bottom:0; border-top-left-radius:12px; }
+.scan-overlay::after{ bottom:-3px; right:-3px; border-left:0; border-top:0; border-bottom-right-radius:12px; }
+.scan-line{ position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, transparent, #10b981, transparent); animation:scanLine 2s ease-in-out infinite; box-shadow:0 0 10px #10b981; }
+@keyframes scanLine{ 0%,100%{ top:0; } 50%{ top:calc(100% - 3px); } }
 ::-webkit-scrollbar{ width:9px; height:9px; }
 ::-webkit-scrollbar-track{ background:#031f17; }
 ::-webkit-scrollbar-thumb{ background:linear-gradient(#065f46,#047857); border-radius:8px; }
@@ -172,9 +178,9 @@ background:linear-gradient(to left, rgba(15,23,42,.85), transparent); pointer-ev
 .sos-btn{ width:48px; height:48px; font-size:8px; }
 .sos-btn .sos-icon{ font-size:16px; }
 @media (min-width:768px){ .sos-btn{ width:64px; height:64px; font-size:10px; } .sos-btn .sos-icon{ font-size:20px; } }
-.ios-native-camera-btn{ background:linear-gradient(135deg,#3b82f6,#1d4ed8); color:white; border:2px solid rgba(96,165,250,.5); box-shadow:0 8px 20px -8px rgba(59,130,246,.6); }
-.ios-native-camera-btn:hover{ background:linear-gradient(135deg,#60a5fa,#2563eb); }
-.ios-camera-hint{ background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.3); color:#93c5fd; }
+.scanner-status-badge{ position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.7); color:#10b981; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:bold; border:1px solid rgba(16,185,129,0.5); }
+.scanner-status-badge::before{ content:''; display:inline-block; width:6px; height:6px; background:#10b981; border-radius:50%; margin-right:6px; animation:pulse 1.5s infinite; }
+@keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
 </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-body">
@@ -257,41 +263,26 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-4 flex flex-col justify-between card-hover">
 <div>
 <h3 class="font-bold text-xs text-brand-gold tracking-wide mb-1">📷 Scanner Absensi Kehadiran</h3>
-<p class="text-[10px] text-slate-400 mb-3">Arahkan kamera ke QR code kartu member untuk mencatat kehadiran.</p>
+<p class="text-[10px] text-slate-400 mb-3">Arahkan kamera ke QR code kartu member untuk mencatat kehadiran. Scan otomatis real-time.</p>
 <div class="flex gap-2 mb-2">
 <select id="scannerCameraSelect" class="flex-1 bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none text-[11px]">
 <option value="">Otomatis (default belakang HP)</option>
 </select>
 <button type="button" onclick="loadCameraDevices(true)" title="Deteksi ulang daftar kamera" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 rounded-xl text-xs font-bold">🔄</button>
 </div>
-<div id="reader" class="w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 min-h-[200px] flex items-center justify-center">
+<div id="reader" class="w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 min-h-[260px] flex items-center justify-center">
 <p class="text-xs text-slate-500 p-3">Kamera belum aktif. Klik tombol di bawah untuk memulai.</p>
 </div>
 <div id="scanStatusBox" class="mt-2 text-center hidden">
 <p id="scanStatusText" class="text-xs font-bold text-emerald-400"></p>
 </div>
-<!-- ===== iOS NATIVE CAMERA FALLBACK ===== -->
-<div id="iosCameraFallback" class="hidden mt-3 space-y-2">
-<div class="ios-camera-hint rounded-xl p-3 text-center">
-<p class="text-[10px] font-bold mb-1">📱 Khusus Pengguna iPhone/iPad</p>
-<p class="text-[9px] text-slate-400 mb-2">Jika kamera belakang hitam atau tidak bisa scan, gunakan tombol di bawah:</p>
-</div>
-<input type="file" id="iosNativeCameraInput" accept="image/*" capture="environment" class="hidden">
-<button type="button" onclick="document.getElementById('iosNativeCameraInput').click()" class="ios-native-camera-btn w-full font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg">
-<span class="text-lg">📸</span>
-<span>Scan via Kamera Bawaan iOS</span>
-</button>
-<input type="file" id="iosNativeCameraInputFront" accept="image/*" capture="user" class="hidden">
-<button type="button" onclick="document.getElementById('iosNativeCameraInputFront').click()" class="ios-native-camera-btn w-full font-bold py-2.5 rounded-xl text-[11px] transition flex items-center justify-center gap-2 shadow-lg">
-<span>🤳</span>
-<span>Scan via Kamera Depan iOS</span>
-</button>
-</div>
-<!-- ===== END iOS NATIVE CAMERA FALLBACK ===== -->
 </div>
 <div class="space-y-2 pt-2">
 <button type="button" onclick="startQrScanner()" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs transition">▶ Nyalakan Kamera Scanner</button>
 <button type="button" onclick="stopQrScanner()" class="w-full bg-rose-600/80 hover:bg-rose-600 text-white font-bold py-2 rounded-xl text-xs transition">⏹ Matikan Kamera</button>
+<!-- Fallback: Upload dari galeri untuk iOS yang bermasalah -->
+<input type="file" id="galleryQrInput" accept="image/*" class="hidden" onchange="handleGalleryQrScan(event)">
+<button type="button" onclick="document.getElementById('galleryQrInput').click()" class="w-full bg-blue-700/80 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-[10px] transition">📁 Scan dari Foto (Upload dari Galeri)</button>
 </div>
 </div>
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3 card-hover">
@@ -934,7 +925,14 @@ let openKamusId = null;
 let editingKamusId = null;
 let sessionTimerInterval = null;
 let sessionRemainingSec = 1800;
-let iosNativeScannerActive = false;
+
+// ===== NATIVE SCANNER STATE =====
+let nativeStream = null;
+let nativeVideoEl = null;
+let nativeCanvasEl = null;
+let nativeScanInterval = null;
+let nativeBarcodeDetector = null;
+let nativeScannerActive = false;
 const listBulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 const IMG_PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect width=%22400%22 height=%22300%22 fill=%22%230f172a%22/%3E%3Ctext x=%22200%22 y=%22150%22 font-size=%2218%22 fill=%22%2364748b%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E';
 const DEFAULT_KAMUS_HASH = [
@@ -965,110 +963,359 @@ const DEFAULT_KAMUS_HASH = [
 ];
 let globalKamusHash = [];
 
-// ===== iOS NATIVE CAMERA DETECTION & FALLBACK =====
+// ================================================================
+// ============= NATIVE QR SCANNER (iOS-FRIENDLY) =================
+// ================================================================
+
 function isIOSDevice() {
-return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-(navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
 
-function showIOSFallbackUI() {
-const fallback = document.getElementById('iosCameraFallback');
-if (fallback && isIOSDevice()) {
-fallback.classList.remove('hidden');
-}
+// Cek apakah BarcodeDetector API tersedia (iOS 17.4+, Chrome Android, dll)
+function isBarcodeDetectorSupported() {
+  return 'BarcodeDetector' in window && typeof window.BarcodeDetector === 'function';
 }
 
-function hideIOSFallbackUI() {
-const fallback = document.getElementById('iosCameraFallback');
-if (fallback) fallback.classList.add('hidden');
+// Inisialisasi BarcodeDetector
+async function initBarcodeDetector() {
+  if (!isBarcodeDetectorSupported()) return null;
+  try {
+    // Cek format yang didukung
+    if (typeof BarcodeDetector.getSupportedFormats === 'function') {
+      const formats = await BarcodeDetector.getSupportedFormats();
+      if (!formats.includes('qr_code')) {
+        console.warn('BarcodeDetector tidak support qr_code');
+        return null;
+      }
+    }
+    return new BarcodeDetector({ formats: ['qr_code'] });
+  } catch (e) {
+    console.warn('Gagal init BarcodeDetector:', e);
+    return null;
+  }
 }
 
-// ===== DECODE QR DARI GAMBAR (jsQR library) =====
-function decodeQRFromImage(file) {
-return new Promise(function(resolve, reject) {
-const reader = new FileReader();
-reader.onload = function(e) {
-const img = new Image();
-img.onload = function() {
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
-// Batasi ukuran untuk performa
-const maxDim = 1024;
-let w = img.width, h = img.height;
-if (w > maxDim || h > maxDim) {
-const scale = maxDim / Math.max(w, h);
-w = Math.round(w * scale);
-h = Math.round(h * scale);
-}
-canvas.width = w;
-canvas.height = h;
-ctx.drawImage(img, 0, 0, w, h);
-const imageData = ctx.getImageData(0, 0, w, h);
-// Gunakan jsQR untuk decode
-if (typeof jsQR !== 'undefined') {
-const code = jsQR(imageData.data, imageData.width, imageData.height, {
-inversionAttempts: 'dontInvert'
-});
-if (code) {
-resolve(code.data);
-} else {
-// Coba dengan invert
-const codeInverted = jsQR(imageData.data, imageData.width, imageData.height, {
-inversionAttempts: 'attemptBoth'
-});
-if (codeInverted) {
-resolve(codeInverted.data);
-} else {
-reject(new Error('QR Code tidak terdeteksi pada foto. Pastikan QR terlihat jelas dan tidak buram.'));
-}
-}
-} else {
-reject(new Error('Library QR decoder tidak tersedia.'));
-}
-};
-img.onerror = function() {
-reject(new Error('Gagal memuat gambar.'));
-};
-img.src = e.target.result;
-};
-reader.onerror = function() {
-reject(new Error('Gagal membaca file gambar.'));
-};
-reader.readAsDataURL(file);
-});
+// Stop native scanner dengan cleanup total
+function stopNativeScanner() {
+  nativeScannerActive = false;
+  
+  if (nativeScanInterval) {
+    clearInterval(nativeScanInterval);
+    nativeScanInterval = null;
+  }
+  
+  if (nativeStream) {
+    nativeStream.getTracks().forEach(track => track.stop());
+    nativeStream = null;
+  }
+  
+  if (nativeVideoEl) {
+    nativeVideoEl.srcObject = null;
+    nativeVideoEl.pause();
+    nativeVideoEl = null;
+  }
+  
+  nativeCanvasEl = null;
+  nativeBarcodeDetector = null;
 }
 
-// ===== SETUP iOS NATIVE CAMERA INPUT HANDLERS =====
-function setupIOSNativeCamera() {
-const backInput = document.getElementById('iosNativeCameraInput');
-const frontInput = document.getElementById('iosNativeCameraInputFront');
-
-function handleIOSCapture(event) {
-const file = event.target.files[0];
-if (!file) return;
-
-toast('📷 Memproses foto untuk scan QR...', 'info', 3000);
-iosNativeScannerActive = true;
-
-decodeQRFromImage(file)
-.then(function(qrData) {
-toast('✅ QR Code terdeteksi! Memproses absensi...', 'success', 3000);
-handleSuccessfulScan(qrData);
-})
-.catch(function(err) {
-toast('❌ ' + err.message, 'error', 6000);
-})
-.finally(function() {
-iosNativeScannerActive = false;
-// Reset input agar bisa foto ulang
-event.target.value = '';
-});
+// Setup kamera dengan getUserMedia langsung (bypass html5-qrcode)
+async function setupNativeCamera(preferredDeviceId) {
+  const constraints = {
+    audio: false,
+    video: {
+      facingMode: { ideal: 'environment' },
+      width: { ideal: 1280, min: 640 },
+      height: { ideal: 720, min: 480 },
+      frameRate: { ideal: 30, max: 30 }
+    }
+  };
+  
+  // Jika user pilih kamera spesifik, override facingMode
+  if (preferredDeviceId) {
+    constraints.video = {
+      deviceId: { exact: preferredDeviceId },
+      width: { ideal: 1280, min: 640 },
+      height: { ideal: 720, min: 480 },
+      frameRate: { ideal: 30, max: 30 }
+    };
+  }
+  
+  // iOS: coba beberapa konfigurasi jika gagal
+  const attempts = [
+    constraints,
+    { audio: false, video: { facingMode: 'environment' } },
+    { audio: false, video: true }
+  ];
+  
+  let lastError = null;
+  for (const attempt of attempts) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(attempt);
+      return stream;
+    } catch (err) {
+      lastError = err;
+      console.warn('getUserMedia gagal dengan constraint:', attempt, err);
+    }
+  }
+  throw lastError || new Error('Tidak ada konfigurasi kamera yang berhasil.');
 }
 
-if (backInput) backInput.addEventListener('change', handleIOSCapture);
-if (frontInput) frontInput.addEventListener('change', handleIOSCapture);
+// Scan frame dengan BarcodeDetector (native, cepat)
+async function scanWithBarcodeDetector() {
+  if (!nativeBarcodeDetector || !nativeVideoEl || !nativeScannerActive) return;
+  if (nativeVideoEl.readyState !== nativeVideoEl.HAVE_ENOUGH_DATA) return;
+  
+  try {
+    const barcodes = await nativeBarcodeDetector.detect(nativeVideoEl);
+    if (barcodes && barcodes.length > 0) {
+      const qrData = barcodes[0].rawValue;
+      if (qrData && !isScanningLocked) {
+        isScanningLocked = true;
+        handleSuccessfulScan(qrData);
+        // Delay sebelum bisa scan lagi
+        setTimeout(() => { isScanningLocked = false; }, 3000);
+      }
+    }
+  } catch (e) {
+    // Silent ignore - akan coba frame berikutnya
+  }
 }
-// ===== END iOS NATIVE CAMERA FALLBACK =====
+
+// Scan frame dengan jsQR (fallback untuk browser lama)
+function scanWithJsQR() {
+  if (!nativeVideoEl || !nativeCanvasEl || !nativeScannerActive) return;
+  if (nativeVideoEl.readyState !== nativeVideoEl.HAVE_ENOUGH_DATA) return;
+  
+  const ctx = nativeCanvasEl.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return;
+  
+  try {
+    // Resize canvas sesuai video (tapi batas max untuk performa)
+    const maxDim = 640;
+    let w = nativeVideoEl.videoWidth;
+    let h = nativeVideoEl.videoHeight;
+    if (w > maxDim || h > maxDim) {
+      const scale = maxDim / Math.max(w, h);
+      w = Math.round(w * scale);
+      h = Math.round(h * scale);
+    }
+    
+    if (nativeCanvasEl.width !== w) nativeCanvasEl.width = w;
+    if (nativeCanvasEl.height !== h) nativeCanvasEl.height = h;
+    
+    ctx.drawImage(nativeVideoEl, 0, 0, w, h);
+    const imageData = ctx.getImageData(0, 0, w, h);
+    
+    if (typeof jsQR !== 'undefined') {
+      const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: 'dontInvert'
+      });
+      if (code && code.data && !isScanningLocked) {
+        isScanningLocked = true;
+        handleSuccessfulScan(code.data);
+        setTimeout(() => { isScanningLocked = false; }, 3000);
+      }
+    }
+  } catch (e) {
+    // Silent
+  }
+}
+
+// Handler: Scan foto dari galeri (fallback terakhir)
+function handleGalleryQrScan(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  toast('🔍 Memproses foto dari galeri...', 'info', 3000);
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Resize untuk performa
+      const maxDim = 1280;
+      let w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim) {
+        const scale = maxDim / Math.max(w, h);
+        w = Math.round(w * scale);
+        h = Math.round(h * scale);
+      }
+      canvas.width = w;
+      canvas.height = h;
+      ctx.drawImage(img, 0, 0, w, h);
+      
+      // Coba BarcodeDetector dulu
+      const tryDecode = async () => {
+        // Method 1: BarcodeDetector
+        if (isBarcodeDetectorSupported()) {
+          try {
+            const detector = new BarcodeDetector({ formats: ['qr_code'] });
+            const barcodes = await detector.detect(canvas);
+            if (barcodes && barcodes.length > 0) {
+              handleSuccessfulScan(barcodes[0].rawValue);
+              return;
+            }
+          } catch (e) {}
+        }
+        
+        // Method 2: jsQR
+        if (typeof jsQR !== 'undefined') {
+          const imageData = ctx.getImageData(0, 0, w, h);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: 'attemptBoth'
+          });
+          if (code && code.data) {
+            handleSuccessfulScan(code.data);
+            return;
+          }
+        }
+        
+        toast('❌ QR Code tidak terdeteksi. Pastikan foto jelas dan QR terlihat penuh.', 'error', 6000);
+      };
+      
+      tryDecode();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  
+  // Reset input agar bisa upload foto yang sama lagi
+  event.target.value = '';
+}
+
+// START NATIVE SCANNER - Fungsi utama yang dipanggil tombol "Nyalakan Kamera"
+async function startNativeQrScanner() {
+  if (nativeScannerActive) {
+    toast('Scanner sudah aktif.', 'info');
+    return;
+  }
+  
+  if (!window.isSecureContext) {
+    toast('Kamera butuh HTTPS. Buka via URL https.', 'error', 8000);
+    return;
+  }
+  
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    toast('Browser tidak support kamera.', 'error', 8000);
+    return;
+  }
+  
+  isScannerStarting = true;
+  isScanningLocked = false;
+  
+  const reader = document.getElementById('reader');
+  if (reader) {
+    reader.innerHTML = '<p class="text-xs text-slate-400 p-3 flex items-center justify-center gap-2"><span class="inline-block w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>Menyiapkan kamera...</p>';
+  }
+  
+  try {
+    // Init BarcodeDetector jika tersedia
+    nativeBarcodeDetector = await initBarcodeDetector();
+    const usingBarcodeDetector = !!nativeBarcodeDetector;
+    
+    // Dapatkan kamera yang dipilih
+    const selectedCameraId = document.getElementById('scannerCameraSelect') ? 
+                             document.getElementById('scannerCameraSelect').value : '';
+    
+    // Request kamera
+    nativeStream = await setupNativeCamera(selectedCameraId);
+    
+    // Buat video element
+    nativeVideoEl = document.createElement('video');
+    nativeVideoEl.setAttribute('autoplay', '');
+    nativeVideoEl.setAttribute('muted', '');
+    nativeVideoEl.setAttribute('playsinline', '');
+    nativeVideoEl.setAttribute('webkit-playsinline', '');
+    nativeVideoEl.muted = true;
+    nativeVideoEl.playsInline = true;
+    nativeVideoEl.style.width = '100%';
+    nativeVideoEl.style.height = 'auto';
+    nativeVideoEl.style.minHeight = '260px';
+    nativeVideoEl.style.maxHeight = '400px';
+    nativeVideoEl.style.objectFit = 'cover';
+    nativeVideoEl.style.borderRadius = '0.75rem';
+    nativeVideoEl.style.background = '#000';
+    
+    // Buat canvas untuk jsQR fallback
+    nativeCanvasEl = document.createElement('canvas');
+    nativeCanvasEl.style.display = 'none';
+    
+    // Attach stream ke video
+    nativeVideoEl.srcObject = nativeStream;
+    
+    // Tunggu metadata loaded
+    await new Promise((resolve, reject) => {
+      nativeVideoEl.onloadedmetadata = () => {
+        nativeVideoEl.play()
+          .then(resolve)
+          .catch(err => {
+            console.warn('Video play gagal, coba lagi...', err);
+            // Retry setelah delay
+            setTimeout(() => {
+              nativeVideoEl.play().then(resolve).catch(reject);
+            }, 100);
+          });
+      };
+      nativeVideoEl.onerror = reject;
+      setTimeout(resolve, 3000); // Timeout 3 detik
+    });
+    
+    // Render ke #reader
+    if (reader) {
+      reader.innerHTML = '';
+      reader.appendChild(nativeVideoEl);
+      reader.appendChild(nativeCanvasEl);
+      
+      // Overlay scanner
+      const overlay = document.createElement('div');
+      overlay.className = 'scan-overlay';
+      const scanLine = document.createElement('div');
+      scanLine.className = 'scan-line';
+      overlay.appendChild(scanLine);
+      reader.appendChild(overlay);
+      
+      // Status badge
+      const statusBadge = document.createElement('div');
+      statusBadge.className = 'scanner-status-badge';
+      statusBadge.innerText = usingBarcodeDetector ? 'NATIVE SCAN' : 'JSQR SCAN';
+      reader.appendChild(statusBadge);
+    }
+    
+    nativeScannerActive = true;
+    
+    // Mulai loop scan
+    const scanFn = usingBarcodeDetector ? scanWithBarcodeDetector : scanWithJsQR;
+    // Scan setiap 200ms (5 fps) - cukup cepat, tidak boros CPU
+    nativeScanInterval = setInterval(scanFn, 200);
+    
+    toast('✅ Kamera aktif! Arahkan ke QR Code.', 'success', 4000);
+    loadCameraDevices(false);
+    
+  } catch (err) {
+    console.error('Gagal start scanner:', err);
+    const msg = explainCameraError(err);
+    
+    if (reader) {
+      reader.innerHTML = '<div class="p-4 text-center space-y-2">' +
+        '<p class="text-xs text-rose-400 font-semibold">' + msg + '</p>' +
+        '<p class="text-[10px] text-slate-500">Gunakan tombol "Scan dari Foto" di bawah sebagai alternatif.</p>' +
+        '</div>';
+    }
+    toast(msg, 'error', 8000);
+    stopNativeScanner();
+  } finally {
+    isScannerStarting = false;
+  }
+}
+
+// ================================================================
+// ============= END NATIVE QR SCANNER =============================
+// ================================================================
 
 function switchAdminTab(tabName) {
 document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
@@ -1376,16 +1623,10 @@ if (kasReportMonthEl) kasReportMonthEl.value = today.slice(0, 7);
 const currentMonthIdx = new Date().getMonth();
 const qrisStartMonthEl = document.getElementById('qrisStartMonth');
 if (qrisStartMonthEl) qrisStartMonthEl.value = listBulan[currentMonthIdx];
-
-// ===== SETUP iOS NATIVE CAMERA =====
-setupIOSNativeCamera();
-// Jika device adalah iOS, tampilkan fallback UI
-if (isIOSDevice()) {
-showIOSFallbackUI();
-}
 });
 window.addEventListener('beforeunload', function() {
-if (html5QrCode) { try { html5QrCode.stop(); } catch (e) {} }
+  stopNativeScanner();
+  if (html5QrCode) { try { html5QrCode.stop(); } catch (e) {} }
 });
 function loadSettings() {
 fetch(GOOGLE_APP_URL + '?action=getSettings')
@@ -1767,173 +2008,98 @@ callApi({ action: "approvePaymentClaim", id: id, tanggal: getTodayStr(), tipe: "
 .then(function() { toast('Pembayaran ' + member + ' disetujui & dicatat ke kas.', "success"); loadPendingPayments(); loadKasData(); fetchDropdownMembers(); })
 .catch(function() { toast("Gagal menyetujui pembayaran.", "error"); });
 }
+
+// Load daftar kamera untuk dropdown
 function loadCameraDevices(showError) {
-const select = document.getElementById('scannerCameraSelect');
-if (!select || !window.Html5Qrcode) return;
-Html5Qrcode.getCameras().then(function(devices) {
-const currentValue = select.value;
-select.innerHTML = '<option value="">Otomatis (default belakang HP)</option>';
-(devices || []).forEach(function(d) { const opt = document.createElement('option'); opt.value = d.id; opt.innerText = d.label || ('Kamera ' + d.id); select.appendChild(opt); });
-if (devices && devices.some(function(d) { return d.id === currentValue; })) select.value = currentValue;
-}).catch(function() { if (showError) toast("Gagal mendeteksi kamera. Pastikan izin kamera sudah diberikan dan halaman HTTPS.", "warn", 6000); });
+  const select = document.getElementById('scannerCameraSelect');
+  if (!select || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+  
+  navigator.mediaDevices.enumerateDevices()
+    .then(function(devices) {
+      const cameras = devices.filter(d => d.kind === 'videoinput');
+      const currentValue = select.value;
+      select.innerHTML = '<option value="">Otomatis (default belakang HP)</option>';
+      
+      cameras.forEach(function(d, idx) {
+        const opt = document.createElement('option');
+        opt.value = d.deviceId;
+        const label = d.label || ('Kamera ' + (idx + 1));
+        // Tandai kamera belakang
+        if (/back|rear|environment|belakang/i.test(label)) {
+          opt.innerText = '📷 ' + label + ' (Belakang)';
+        } else if (/front|depan|user/i.test(label)) {
+          opt.innerText = '🤳 ' + label + ' (Depan)';
+        } else {
+          opt.innerText = '📹 ' + label;
+        }
+        select.appendChild(opt);
+      });
+      
+      if (cameras.some(d => d.deviceId === currentValue)) {
+        select.value = currentValue;
+      }
+    })
+    .catch(function(err) {
+      if (showError) toast("Gagal mendeteksi kamera: " + err.message, "warn", 6000);
+    });
 }
+
 function stopQrScanner(silent) {
-if (html5QrCode) {
-html5QrCode.stop().catch(function() {}).finally(function() {
-try { if (html5QrCode && html5QrCode.clear) html5QrCode.clear(); } catch (e) {}
-html5QrCode = null;
-if (!silent) { const box = document.getElementById('scanStatusBox'); if (box) box.classList.add('hidden'); toast("Kamera scanner dimatikan.", "info"); }
-});
+  // Stop native scanner dulu
+  stopNativeScanner();
+  
+  // Stop html5-qrcode jika aktif
+  if (html5QrCode) {
+    html5QrCode.stop().catch(function() {}).finally(function() {
+      try { if (html5QrCode && html5QrCode.clear) html5QrCode.clear(); } catch (e) {}
+      html5QrCode = null;
+      if (!silent) {
+        const box = document.getElementById('scanStatusBox');
+        if (box) box.classList.add('hidden');
+        toast("Kamera scanner dimatikan.", "info");
+        const reader = document.getElementById('reader');
+        if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Kamera dimatikan. Klik tombol untuk memulai lagi.</p>';
+      }
+    });
+  } else if (!silent) {
+    const box = document.getElementById('scanStatusBox');
+    if (box) box.classList.add('hidden');
+    toast("Kamera scanner dimatikan.", "info");
+    const reader = document.getElementById('reader');
+    if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Kamera dimatikan. Klik tombol untuk memulai lagi.</p>';
+  }
 }
-}
+
 function explainCameraError(err) {
 const name = err && err.name ? err.name : '';
 const raw = err && err.message ? err.message : String(err || '');
 if (name === 'NotAllowedError' || name === 'PermissionDeniedError' || name === 'SecurityError') {
-return 'Izin kamera ditolak/diblokir. Cek pengaturan izin situs di browser HP (Site settings > Camera > Allow), lalu muat ulang halaman. Jika sudah "Allow" tapi tetap gagal, ini kemungkinan dibatasi oleh iframe internal Apps Script (Permissions-Policy) di beberapa browser mobile.';
+return 'Izin kamera ditolak/diblokir. Cek pengaturan izin situs di browser HP (Site settings > Camera > Allow), lalu muat ulang halaman.';
 }
 if (name === 'NotReadableError' || name === 'TrackStartError') {
-return 'Kamera sedang dipakai aplikasi lain (mis. app kamera bawaan/app lain yang masih membuka kamera). Tutup aplikasi tersebut lalu coba lagi.';
+return 'Kamera sedang dipakai aplikasi lain. Tutup aplikasi tersebut lalu coba lagi.';
 }
 if (name === 'OverconstrainedError' || name === 'ConstraintNotSatisfiedError') {
-return 'HP tidak mendukung konfigurasi kamera yang diminta. Coba pilih kamera secara manual dari dropdown di atas.';
+return 'HP tidak mendukung konfigurasi kamera yang diminta.';
 }
 if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
 return 'Tidak ditemukan kamera pada perangkat ini.';
 }
 return 'Gagal membuka kamera (' + (name || 'Error') + (raw ? ': ' + raw : '') + ').';
 }
-function startCameraWithFallback(selectedCameraId, config, onScanSuccess) {
-return Html5Qrcode.getCameras().catch(function() { return []; }).then(function(devices) {
-const attempts = [];
-if (selectedCameraId) { attempts.push({ deviceId: { exact: selectedCameraId } }); attempts.push({ deviceId: { ideal: selectedCameraId } }); }
-if (devices && devices.length > 0) {
-const back = devices.find(function(d) { return /back|rear|environment|belakang/i.test(d.label || ''); });
-const front = devices.find(function(d) { return /front|depan|user/i.test(d.label || ''); });
-if (back) { attempts.push({ deviceId: { exact: back.id } }); attempts.push({ deviceId: { ideal: back.id } }); }
-attempts.push({ facingMode: { exact: 'environment' } }); attempts.push({ facingMode: 'environment' });
-if (front) { attempts.push({ deviceId: { exact: front.id } }); attempts.push({ deviceId: { ideal: front.id } }); }
-attempts.push({ deviceId: { exact: devices[0].id } }); attempts.push({ deviceId: { ideal: devices[0].id } });
-} else {
-attempts.push({ facingMode: { exact: 'environment' } }); attempts.push({ facingMode: 'environment' });
-}
-let lastErr = null;
-function tryNext(index) {
-if (index >= attempts.length) return Promise.reject(lastErr || new Error('Tidak ada kamera yang dapat digunakan.'));
-return html5QrCode.start(attempts[index], config, onScanSuccess, function() {}).catch(function(err) {
-lastErr = err;
-return tryNext(index + 1);
-});
-}
-return tryNext(0);
-});
-}
+
+// Fungsi startQrScanner - sekarang menggunakan NATIVE scanner
 function startQrScanner() {
-if (isScannerStarting || iosNativeScannerActive) return;
-
-// ===== iOS: Langsung tampilkan fallback UI dan skip WebRTC scanner =====
-if (isIOSDevice()) {
-showIOSFallbackUI();
-const reader = document.getElementById('reader');
-if (reader) {
-reader.innerHTML = '<div class="text-center p-4 space-y-3">' +
-'<p class="text-xs text-emerald-400 font-bold">📱 Mode iOS Terdeteksi</p>' +
-'<p class="text-[11px] text-slate-400 leading-relaxed">Untuk pengguna iPhone/iPad, gunakan tombol <b>"Scan via Kamera Bawaan iOS"</b> di bawah. Ini akan membuka kamera asli iPhone untuk memotret QR Code, lalu sistem akan otomatis mendeteksi dan mencatat absensi.</p>' +
-'<p class="text-[10px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2">💡 Tips: Pastikan QR Code terlihat jelas, tidak buram, dan tidak terhalang saat memotret.</p>' +
-'</div>';
-}
-toast("Mode iOS aktif. Gunakan tombol 'Scan via Kamera Bawaan iOS'.", "info", 5000);
-return;
-}
-// ===== END iOS CHECK =====
-
-if (!window.isSecureContext) {
-var readerBox = document.getElementById('reader');
-if (readerBox) readerBox.innerHTML = '<p class="text-xs text-rose-400 p-3 font-semibold leading-relaxed">⚠️ Kamera diblokir browser karena halaman tidak aman (http).<br><br>Solusi: buka situs melalui URL web app Apps Script yang ber-<b>HTTPS</b> (https://script.google.com/macros/s/.../exec), atau lewat localhost. Kamera TIDAK bisa aktif melalui http://.</p>';
-toast("Kamera butuh HTTPS. Buka via URL web app Apps Script (https), bukan http.", "error", 10000);
-return;
-}
-if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-var readerBox2 = document.getElementById('reader');
-if (readerBox2) readerBox2.innerHTML = '<p class="text-xs text-rose-400 p-3 font-semibold leading-relaxed">⚠️ Browser ini tidak mengizinkan akses kamera di halaman ini (kemungkinan dibatasi oleh iframe Apps Script). Coba buka di tab browser biasa (bukan dari dalam app lain/WebView), atau gunakan browser lain.</p>';
-toast("API kamera tidak tersedia di konteks halaman ini.", "error", 8000);
-return;
-}
-isScannerStarting = true; isScanningLocked = false;
-const statusBox = document.getElementById('scanStatusBox');
-if (statusBox) statusBox.classList.add('hidden');
-if (!window.Html5Qrcode) { toast('Library scanner belum termuat sempurna.', "error", 5000); isScannerStarting = false; return; }
-if (html5QrCode) { html5QrCode.stop().catch(function() {}).finally(function() { initScannerInstance(); }); }
-else { initScannerInstance(); }
-}
-function initScannerInstance() {
-const reader = document.getElementById('reader');
-if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Menyiapkan kamera...</p>';
-try { html5QrCode = new Html5Qrcode("reader"); } catch (err) {
-if (reader) reader.innerHTML = '<p class="text-xs text-rose-400 p-3">Gagal membuat instance scanner.</p>';
-toast("Gagal membuat instance scanner.", "error", 5000); isScannerStarting = false; return;
-}
-const isIOS = isIOSDevice();
-const config = isIOS ? { fps: 10, aspectRatio: { ideal: 1.777778 } } : { fps: 10, qrbox: { width: 220, height: 220 } };
-const onScanSuccess = function(qrCodeMessage) { if (!isScanningLocked) { isScanningLocked = true; handleSuccessfulScan(qrCodeMessage); } };
-const selectedCameraId = document.getElementById('scannerCameraSelect') ? document.getElementById('scannerCameraSelect').value : '';
-startCameraWithFallback(selectedCameraId, config, onScanSuccess).then(function() {
-toast("Kamera scanner aktif.", "success");
-loadCameraDevices(false);
-
-// ===== iOS FIX: Force video play dan atribut yang dibutuhkan iOS =====
-setTimeout(function() {
-var videoEl = document.querySelector('#reader video');
-if (videoEl) {
-videoEl.setAttribute('playsinline', 'true');
-videoEl.setAttribute('webkit-playsinline', 'true');
-videoEl.setAttribute('muted', 'true');
-videoEl.setAttribute('autoplay', 'true');
-videoEl.muted = true;
-videoEl.playsInline = true;
-
-if (videoEl.paused) {
-var playPromise = videoEl.play();
-if (playPromise !== undefined) {
-playPromise.then(function() {
-console.log('iOS video play berhasil');
-}).catch(function(err) {
-console.warn('iOS video play gagal:', err);
-toast("Video kamera perlu ketukan. Tap area kamera.", "warn", 5000);
-});
-}
+  if (isScannerStarting) return;
+  if (nativeScannerActive) {
+    toast('Scanner sudah aktif.', 'info');
+    return;
+  }
+  
+  // Langsung gunakan native scanner (lebih reliable di iOS)
+  startNativeQrScanner();
 }
 
-videoEl.addEventListener('loadedmetadata', function() {
-if (videoEl.videoHeight === 0) {
-videoEl.style.minHeight = '240px';
-}
-});
-
-setTimeout(function() {
-if (videoEl && (videoEl.paused || videoEl.readyState < 2)) {
-videoEl.play().catch(function(){});
-}
-}, 2000);
-}
-}, 300);
-
-reader.addEventListener('click', function() {
-var v = reader.querySelector('video');
-if (v && v.paused) {
-v.muted = true;
-v.playsInline = true;
-v.play().catch(function(){});
-}
-});
-}).catch(function(err) {
-const msg = explainCameraError(err);
-if (reader) reader.innerHTML = '<p class="text-xs text-rose-400 p-3 leading-relaxed">' + msg + '</p>';
-toast(msg, "error", 8000);
-try { if (html5QrCode) html5QrCode.clear(); } catch (e) {}
-html5QrCode = null;
-}).finally(function() { isScannerStarting = false; });
-}
 function handleSuccessfulScan(qrCodeMessage) {
 const statusBox = document.getElementById('scanStatusBox');
 const statusText = document.getElementById('scanStatusText');
@@ -1962,7 +2128,7 @@ loadMembersData();
 statusText.className = "text-xs font-bold text-rose-400";
 statusText.innerText = "❌ Gagal koneksi ke server.";
 toast("Gagal memproses absensi.", "error");
-}).finally(function() { setTimeout(function() { isScanningLocked = false; iosNativeScannerActive = false; }, 3000); });
+}).finally(function() { setTimeout(function() { isScanningLocked = false; }, 3000); });
 }
 function updateDaftarRunActiveInfo(item) {
 const el = document.getElementById('daftarRunActiveInfo');

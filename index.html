@@ -70,7 +70,9 @@ h1,h2,h3,h4,.font-display{ font-family:'Rajdhani',sans-serif; }
 @media (min-width:640px){ .show-sm-block{ display:block; } }
 .mobile-nav-strip{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
 @media (min-width:1024px){ .mobile-nav-strip{ display:none; } }
-#reader video{ width: 100% !important; height: auto !important; max-height: 400px; object-fit: cover; border-radius: 0.75rem; display: block !important; }
+#reader video{ width: 100% !important; height: auto !important; min-height: 220px !important; max-height: 400px; object-fit: cover; border-radius: 0.75rem; display: block !important; background: #000; }
+#reader__scan_region{ min-height: 220px; display: flex; align-items: center; justify-content: center; }
+#reader__scan_region video{ width: 100% !important; height: auto !important; min-height: 220px !important; }
 #reader img{ max-width: 100%; height: auto; }
 #reader__dashboard_section{ display: block !important; }
 #reader__dashboard_section_csr button{ background: #047857 !important; color: white !important; border-radius: 0.5rem !important; padding: 0.5rem 1rem !important; font-weight: bold !important; }
@@ -173,7 +175,6 @@ background:linear-gradient(to left, rgba(15,23,42,.85), transparent); pointer-ev
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-body">
 <div id="toastContainer"></div>
-
 <div class="bg-brand-dark border-b border-emerald-900/50 py-2 px-3 sm:px-4 text-[11px] sm:text-xs">
 <div class="max-w-7xl mx-auto flex justify-between items-center">
 <div class="flex items-center space-x-2 text-emerald-400 font-semibold">
@@ -185,7 +186,7 @@ background:linear-gradient(to left, rgba(15,23,42,.85), transparent); pointer-ev
 </div>
 </div>
 </div>
-
+</div>
 <header class="bg-brand-dark/90 backdrop-blur-md border-b border-emerald-800/40 sticky top-0 z-40">
 <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
 <div class="flex justify-between items-center h-16 sm:h-20">
@@ -201,7 +202,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <span class="text-[9px] sm:text-[10px] tracking-widest text-brand-gold font-semibold block uppercase">HIke Happy Humble</span>
 </div>
 </div>
-
 <nav class="nav-desktop items-center text-xs font-semibold tracking-wide">
 <button onclick="smartNav('jadwal')" class="nav-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-emerald-950/60 transition" data-page="jadwal">📅 Lihat Jadwal</button>
 <button onclick="smartModalNav(openEventTerbaruModal)" class="nav-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-emerald-950/60 transition">📍 Event Terbaru</button>
@@ -210,7 +210,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <button onclick="smartNav('kamus')" class="nav-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-emerald-950/60 transition" data-page="kamus">📚 Kamus Hash</button>
 <button onclick="smartNav('sejarah')" class="nav-btn px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-emerald-950/60 transition" data-page="sejarah">📜 Sejarah</button>
 </nav>
-
 <div class="flex items-center space-x-2">
 <button onclick="smartModalNav(openQrisModal)" class="btn-shine btn-emerald px-3 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1.5">
 <span>💳</span> <span class="show-sm-inline">Iuran</span>
@@ -219,7 +218,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <button onclick="logoutAdmin()" id="logoutNavBtn" class="hidden bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-xl text-[11px] sm:text-xs font-bold shadow transition">Logout</button>
 </div>
 </div>
-
 <div class="mobile-nav-strip pb-2 -mx-1 px-1">
 <button onclick="smartNav('jadwal')" class="nav-btn flex items-center justify-center gap-1 px-2 py-2 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300 text-[10px] font-bold" data-page="jadwal">📅<br>Lihat Jadwal</button>
 <button onclick="smartModalNav(openEventTerbaruModal)" class="flex items-center justify-center gap-1 px-2 py-2 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300 text-[10px] font-bold">📍<br>Event</button>
@@ -230,15 +228,12 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </div>
 </div>
 </header>
-
 <button onclick="openEmergencyWA()" class="sos-btn fixed bottom-6 right-4 lg:right-6 z-50 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl shadow-2xl shadow-rose-950/80 flex flex-col items-center justify-center font-bold border-2 border-rose-400/50 hover:scale-105 transition transform" title="Kontak Darurat">
 <span class="sos-icon leading-none">🆘</span>
 <span class="mt-0.5 tracking-tight show-sm-block">SOS</span>
 </button>
-
 <div id="adminPanel" class="hidden bg-slate-950 border-b-2 border-brand-gold/60 py-4 sm:py-6 px-3 sm:px-4 lg:px-8 shadow-2xl relative z-30">
 <div class="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
 <span class="font-bold text-brand-gold text-sm sm:text-base flex items-center space-x-2">
 <span>⚙️</span><span class="tracking-wide font-display">Panel Kontrol Admin</span>
@@ -248,14 +243,12 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <span class="bg-amber-500/20 text-brand-gold border border-brand-gold/40 text-[10px] font-bold px-3 py-1 rounded-full shadow">ADMIN</span>
 </div>
 </div>
-
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pb-1">
 <button onclick="switchAdminTab('member')" class="admin-tab-btn active w-full px-3 py-2.5 rounded-xl text-xs font-semibold" data-tab="member">👤 Member</button>
 <button onclick="switchAdminTab('hare')" class="admin-tab-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold" data-tab="hare">🚩 Hare</button>
 <button onclick="switchAdminTab('keuangan')" class="admin-tab-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold" data-tab="keuangan">💰 Keuangan</button>
 <button onclick="switchAdminTab('pengaturan')" class="admin-tab-btn w-full px-3 py-2.5 rounded-xl text-xs font-semibold" data-tab="pengaturan">⚙️ Pengaturan</button>
 </div>
-
 <div id="adminTab-member" class="admin-tab-content space-y-6">
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-4 flex flex-col justify-between card-hover">
@@ -280,7 +273,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <button type="button" onclick="stopQrScanner()" class="w-full bg-rose-600/80 hover:bg-rose-600 text-white font-bold py-2 rounded-xl text-xs transition">⏹ Matikan Kamera</button>
 </div>
 </div>
-
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3 card-hover">
 <h3 class="font-bold text-xs text-brand-gold tracking-wide">📝 Daftar Hasher Baru</h3>
 <form id="regForm" onsubmit="handleRegister(event)" class="space-y-3 text-xs">
@@ -308,7 +300,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <button type="submit" id="btnSubmit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 rounded-xl transition shadow">🪪 Buat ID Member & Simpan</button>
 </form>
 </div>
-
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 flex flex-col items-center justify-center card-hover">
 <h3 class="font-bold text-xs text-brand-gold tracking-wide mb-3">Preview ID Card Digital</h3>
 <div id="memberCard" class="card-bg w-full max-w-xs rounded-2xl p-5 text-white shadow-2xl relative overflow-hidden border border-emerald-500/40">
@@ -335,7 +326,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </button>
 </div>
 </div>
-
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-4 card-hover">
 <div>
@@ -356,7 +346,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </button>
 </div>
 </div>
-
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3 card-hover">
 <div class="flex justify-between items-center">
 <h3 class="font-bold text-xs text-brand-gold tracking-wide">📢 Reminder Iuran Belum Lunas</h3>
@@ -366,7 +355,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </div>
 </div>
 </div>
-
 <div id="adminTab-hare" class="admin-tab-content hidden space-y-6">
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3 max-w-2xl card-hover">
 <h3 class="font-bold text-xs text-brand-gold tracking-wide">🚩 Manajemen Hare Kita</h3>
@@ -417,7 +405,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </div>
 </div>
 </div>
-
 <div id="adminTab-keuangan" class="admin-tab-content hidden space-y-6">
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-4 card-hover">
@@ -454,7 +441,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <button type="submit" class="w-full bg-brand-gold hover:bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl shadow transition">Simpan Transaksi</button>
 </form>
 </div>
-
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3 card-hover">
 <div class="flex justify-between items-center">
 <h3 class="font-bold text-xs text-brand-gold tracking-wide">🕒 Verifikasi Pembayaran</h3>
@@ -464,7 +450,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <p class="text-slate-500 text-center py-2">Memuat data pending...</p>
 </div>
 </div>
-
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3 card-hover">
 <div class="flex flex-col gap-2">
 <h3 class="font-bold text-xs text-brand-gold tracking-wide">📖 Rekap Kas & Bank</h3>
@@ -493,7 +478,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </div>
 </div>
 </div>
-
 <div id="adminTab-pengaturan" class="admin-tab-content hidden space-y-6">
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3 card-hover">
@@ -503,7 +487,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </div>
 <p class="text-[10px] text-slate-400">Kosongkan daftar peserta sebelum run minggu berikutnya dimulai. Data lama tetap tersimpan (dipindah ke tab arsip baru), tidak dihapus.</p>
 </div>
-
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3 card-hover">
 <h3 class="font-bold text-xs text-brand-gold tracking-wide">🏆 Target Reward Kehadiran</h3>
 <label class="block font-semibold text-slate-400 mb-1 text-xs">Jumlah Run Minimal untuk Reward</label>
@@ -516,12 +499,10 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </div>
 </div>
 </div>
-
 </div>
 </div>
-
+</div>
 <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 lg:p-6 xl:p-8">
-
 <div id="page-home" class="page-content">
 <section class="hero-sport rounded-3xl border border-emerald-700/40 shadow-2xl relative min-h-[70vh] flex items-center justify-center p-6 sm:p-10">
 <div class="hero-grid"></div>
@@ -549,10 +530,8 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </section>
 </div>
-
 <div id="page-jadwal" class="page-content hidden space-y-6">
 <button onclick="backToHome()" class="back-btn"><span class="arrow">←</span> Kembali ke Beranda</button>
-
 <section class="bg-slate-800/40 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-slate-700/60 space-y-5">
 <div class="border-b border-slate-700/80 pb-3">
 <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-3 py-1 rounded-full">Next Hash Event</span>
@@ -563,7 +542,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 <p class="text-slate-500 text-xs text-center py-6">Memuat jadwal run...</p>
 </div>
 </section>
-
 <section id="hare" class="bg-slate-800/40 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-slate-700/60 space-y-6">
 <div class="border-b border-slate-700/80 pb-3">
 <h2 class="font-bold text-white text-base sm:text-lg flex items-center space-x-2">
@@ -575,7 +553,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 <p class="text-slate-500 text-xs col-span-full text-center py-8">Memuat data Hare...</p>
 </div>
 </section>
-
 <section id="runRegSection" class="hidden bg-slate-800/40 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-slate-700/60 space-y-6">
 <div class="border-b border-slate-700/80 pb-3 flex justify-between items-start gap-3">
 <div>
@@ -620,7 +597,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </section>
 </div>
-
 <div id="page-galeri" class="page-content hidden space-y-6">
 <button onclick="backToHome()" class="back-btn"><span class="arrow">←</span> Kembali ke Beranda</button>
 <section id="galeri" class="bg-slate-800/40 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-slate-700/60 space-y-6">
@@ -642,7 +618,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </section>
 </div>
-
 <div id="page-kamus" class="page-content hidden space-y-6">
 <button onclick="backToHome()" class="back-btn"><span class="arrow">←</span> Kembali ke Beranda</button>
 <section class="bg-slate-800/40 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-slate-700/60 space-y-6">
@@ -660,7 +635,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 <div id="kamusGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pb-6"></div>
 </section>
 </div>
-
 <div id="page-sejarah" class="page-content hidden space-y-6">
 <button onclick="backToHome()" class="back-btn"><span class="arrow">←</span> Kembali ke Beranda</button>
 <section id="sejarah" class="bg-slate-800/40 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-slate-700/60 space-y-4">
@@ -682,9 +656,7 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </section>
 </div>
-
 </main>
-
 <footer class="bg-slate-950 border-t border-slate-800 text-slate-400 text-center py-6 sm:py-8 text-xs mt-auto space-y-3">
 <div class="max-w-7xl mx-auto px-4 space-y-3">
 <p class="font-display font-bold text-white tracking-widest text-base">HITMAN PEKANBARU HASHING CLUB</p>
@@ -703,11 +675,9 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 <p class="text-[10px] text-slate-600">&copy; 2026 HITMAN PEKANBARU HASHING CLUB. All rights reserved.</p>
 </div>
 </footer>
-
 <button id="backToAdminBtn" onclick="returnToAdminPanel()" class="hidden fixed bottom-6 left-4 z-[60] bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs border-2 border-amber-300 animate-bounce">
 ✕ Tutup & Kembali ke Admin
 </button>
-
 <div id="eventTerbaruModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
 <div class="modal-in bg-slate-900 border border-brand-gold/60 w-full max-w-3xl p-4 sm:p-6 rounded-3xl shadow-2xl space-y-4 text-slate-100 max-h-[90vh] overflow-y-auto">
 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -720,7 +690,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </div>
 </div>
-
 <div id="prestasiModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
 <div class="modal-in bg-slate-900 border border-brand-gold/60 w-full max-w-3xl p-4 sm:p-6 rounded-3xl shadow-2xl space-y-4 text-slate-100 max-h-[90vh] overflow-y-auto">
 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -733,7 +702,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </div>
 </div>
-
 <div id="galleryDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
 <div class="modal-in bg-slate-900 border border-slate-800 w-full max-w-2xl p-4 sm:p-6 rounded-3xl shadow-2xl space-y-4 text-slate-100 relative max-h-[90vh] flex flex-col items-center">
 <div class="flex justify-between items-center w-full border-b border-slate-800 pb-3">
@@ -747,7 +715,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 <button onclick="closeGalleryModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs transition">Tutup</button>
 </div>
 </div>
-
 <div id="hareDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
 <div class="modal-in bg-slate-900 border border-brand-gold/60 w-full max-w-lg p-4 sm:p-6 rounded-3xl shadow-2xl space-y-4 text-slate-100 relative max-h-[90vh] overflow-y-auto">
 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -783,7 +750,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 <button onclick="closeHareModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs transition">Tutup</button>
 </div>
 </div>
-
 <div id="qrisPayModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
 <div class="modal-in bg-slate-900 border border-slate-800 w-full max-w-md p-4 sm:p-6 rounded-3xl shadow-2xl space-y-4 relative max-h-[90vh] overflow-y-auto text-slate-100">
 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -836,7 +802,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </div>
 </div>
-
 <div id="adminModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
 <div class="modal-in bg-slate-900 border border-slate-800 w-full max-w-sm p-5 sm:p-6 rounded-3xl shadow-2xl space-y-4">
 <h3 class="font-bold text-lg text-white">🔐 Verifikasi Admin</h3>
@@ -850,7 +815,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </div>
 </div>
-
 <div id="editKasModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
 <div class="modal-in bg-slate-900 border border-slate-800 w-full max-w-sm p-5 sm:p-6 rounded-3xl shadow-2xl space-y-4">
 <h3 class="font-bold text-base text-white">✏️ Koreksi Transaksi Kas</h3>
@@ -872,7 +836,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </div>
 </div>
-
 <div id="databaseModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-3 sm:p-4">
 <div class="modal-in bg-slate-900 border border-slate-800 w-full max-w-5xl p-4 sm:p-6 rounded-3xl shadow-2xl space-y-4 max-h-[90vh] flex flex-col text-slate-100">
 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -903,7 +866,6 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </div>
 </div>
 </div>
-
 <div id="cardModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
 <div class="modal-in relative w-full max-w-sm text-center">
 <button onclick="closeCardModal()" class="absolute -top-10 right-0 text-white bg-rose-600 hover:bg-rose-500 px-3 py-1 rounded-full text-xs font-bold shadow">Tutup ✕</button>
@@ -931,10 +893,8 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 </button>
 </div>
 </div>
-
 <script>
 const GOOGLE_APP_URL = "https://script.google.com/macros/s/AKfycbw9tseOqy3DH9MEuBbHLzSffWDeSUDurDg62kQANAq8izkRdqeI1nBv-kGia_aiamMs/exec";
-
 let globalMembersData = [];
 let globalKasData = [];
 let globalHaresData = [];
@@ -953,10 +913,8 @@ let openKamusId = null;
 let editingKamusId = null;
 let sessionTimerInterval = null;
 let sessionRemainingSec = 1800;
-
 const listBulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 const IMG_PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect width=%22400%22 height=%22300%22 fill=%22%230f172a%22/%3E%3Ctext x=%22200%22 y=%22150%22 font-size=%2218%22 fill=%22%2364748b%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E';
-
 const DEFAULT_KAMUS_HASH = [
 { id:"d01", term:"Hash House Harriers", def:"Klub olahraga lari lintas alam yang berasal dari Malaya (sekarang Malaysia), dengan jalur yang diberi tanda potongan kertas (kawul) atau tepung oleh Hare." },
 { id:"d02", term:"Hasher", def:"Anggota yang telah membayar Membership Fee & namanya telah resmi tercantum sebagai anggota Hash Club." },
@@ -984,7 +942,6 @@ const DEFAULT_KAMUS_HASH = [
 { id:"d24", term:"Virgin", def:"Sebutan bagi peserta yang baru pertama kali ikut lari di Hash Club." }
 ];
 let globalKamusHash = [];
-
 function switchAdminTab(tabName) {
 document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
 document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -993,7 +950,6 @@ if (target) target.classList.remove('hidden');
 const btn = document.querySelector('[data-tab="' + tabName + '"]');
 if (btn) btn.classList.add('active');
 }
-
 function startSessionTimer(seconds) {
 sessionRemainingSec = seconds || 1800;
 clearInterval(sessionTimerInterval);
@@ -1010,7 +966,6 @@ logoutAdmin();
 }
 }, 1000);
 }
-
 function switchPage(pageId) {
 document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
 const target = document.getElementById('page-' + pageId);
@@ -1027,7 +982,6 @@ if (adminSessionToken && pageId !== 'home' && document.getElementById('adminPane
 document.getElementById('backToAdminBtn').classList.remove('hidden');
 }
 }
-
 function smartNav(pageId) {
 if (adminSessionToken) {
 document.getElementById('adminPanel').classList.add('hidden');
@@ -1037,7 +991,6 @@ document.getElementById('backToAdminBtn').classList.remove('hidden');
 switchPage(pageId);
 }
 }
-
 function smartModalNav(modalFunc) {
 if (adminSessionToken) {
 document.getElementById('adminPanel').classList.add('hidden');
@@ -1047,7 +1000,6 @@ document.getElementById('backToAdminBtn').classList.remove('hidden');
 modalFunc();
 }
 }
-
 function returnToAdminPanel() {
 document.getElementById('backToAdminBtn').classList.add('hidden');
 closeEventTerbaruModal(); closePrestasiModal(); closeGalleryModal(); closeHareModal();
@@ -1055,7 +1007,6 @@ closeQrisModal(); closeAdminModal(); closeEditKasModal(); closeDatabaseModal(); 
 hideAllPublicPages();
 document.getElementById('adminPanel').classList.remove('hidden');
 }
-
 function backToHome() {
 if (adminSessionToken) {
 returnToAdminPanel();
@@ -1063,7 +1014,6 @@ returnToAdminPanel();
 switchPage('home');
 }
 }
-
 function hideAllPublicPages() {
 document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1071,7 +1021,6 @@ btn.classList.remove('bg-emerald-950','text-brand-gold','border','border-emerald
 });
 window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
 function showRunRegSection() {
 var el = document.getElementById('runRegSection');
 if (el) {
@@ -1087,7 +1036,6 @@ function scrollToRunRegForm() {
 switchPage('jadwal');
 showRunRegSection();
 }
-
 function toast(message, type, duration) {
 type = type || "info"; duration = duration || 4000;
 const container = document.getElementById('toastContainer');
@@ -1100,7 +1048,6 @@ el.style.opacity = '0'; el.style.transition = 'opacity .3s';
 setTimeout(function() { el.remove(); }, 300);
 }, duration);
 }
-
 function escapeHtml(text) {
 return String(text || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
@@ -1167,7 +1114,6 @@ else if (clean.startsWith('62')) {}
 else if (clean.startsWith('8')) clean = '62' + clean;
 return clean;
 }
-
 function applyGlobalData(data) {
 globalMembersData = data.members || [];
 globalKasData = data.kas || [];
@@ -1182,7 +1128,6 @@ renderGalleryGrid();
 renderRunRegList();
 updateSettingsUI();
 }
-
 function updateSettingsUI() {
 const tarifEl = document.getElementById('settingTarifBulanan');
 if (tarifEl && currentSettings.tarifBulanan) tarifEl.value = currentSettings.tarifBulanan;
@@ -1197,7 +1142,6 @@ const prestasiSub = document.getElementById('prestasiSubtitle');
 if (prestasiSub) prestasiSub.innerText = 'Member yang telah mencapai target ' + (currentSettings.runTarget || 20) + 'x kehadiran run.';
 loadKamusHashData();
 }
-
 function renderKasTable() {
 const tbody = document.getElementById('kasTableBody');
 if (!tbody) return;
@@ -1219,7 +1163,6 @@ tbody.innerHTML = '<tr><td colspan="5" class="p-3 text-center text-slate-500">Be
 document.getElementById('totalSaldoKas').innerText = 'Rp 0';
 }
 }
-
 function processHaresData() {
 const featuredEl = document.getElementById('featuredNextRun');
 const gallery = document.getElementById('hareGallery');
@@ -1247,7 +1190,6 @@ if (adminList) adminList.innerHTML = '<tr><td colspan="3" class="p-2 text-center
 if (eventList) eventList.innerHTML = '<p class="text-slate-500 text-xs col-span-full text-center py-4">Belum ada event mendatang yang terdaftar.</p>';
 }
 }
-
 function renderGalleryGrid() {
 const grid = document.getElementById('galleryGrid');
 if (globalGalleryData.length > 0) {
@@ -1266,7 +1208,6 @@ if (grid) grid.innerHTML = '<p class="text-slate-500 text-xs col-span-full text-
 renderGalleryAdminGrid();
 }
 }
-
 function renderRunRegList() {
 const container = document.getElementById('runRegList');
 if (!container) return;
@@ -1280,7 +1221,6 @@ return '<div class="flex justify-between items-center bg-slate-950 border border
 container.innerHTML = '<p class="text-slate-500 text-center py-2">Belum ada yang mendaftar untuk sesi run ini.</p>';
 }
 }
-
 window.addEventListener('DOMContentLoaded', function() {
 const cachedData = localStorage.getItem('hitman_dashboard_cache_v2');
 if (cachedData) {
@@ -1300,7 +1240,6 @@ applyGlobalData(res.data);
 }
 })
 .catch(function(err) { console.error("Gagal fetch data server", err); });
-
 const today = getTodayStr();
 const kasDateEl = document.getElementById('kasDate');
 if (kasDateEl) { kasDateEl.value = today; kasDateEl.max = today; }
@@ -1310,11 +1249,9 @@ const currentMonthIdx = new Date().getMonth();
 const qrisStartMonthEl = document.getElementById('qrisStartMonth');
 if (qrisStartMonthEl) qrisStartMonthEl.value = listBulan[currentMonthIdx];
 });
-
 window.addEventListener('beforeunload', function() {
 if (html5QrCode) { try { html5QrCode.stop(); } catch (e) {} }
 });
-
 function loadSettings() {
 fetch(GOOGLE_APP_URL + '?action=getSettings')
 .then(function(res) { return res.json(); })
@@ -1325,7 +1262,6 @@ updateSettingsUI();
 }
 }).catch(function() {});
 }
-
 function saveTarifSetting(btn) {
 const tarif = parseInt(document.getElementById('settingTarifBulanan').value || 0);
 if (btn) { btn.disabled = true; btn.innerText = "Menyimpan..."; }
@@ -1334,7 +1270,6 @@ callApi({ action: "saveSetting", key: "tarifBulanan", value: tarif })
 .catch(function() { toast("Gagal menyimpan tarif ke server.", "error"); })
 .finally(function() { if (btn) { btn.disabled = false; btn.innerText = "Simpan Tarif Dasar"; } });
 }
-
 function saveRunTarget() {
 const val = parseInt(document.getElementById('settingRunTarget').value || 20);
 callApi({ action: "saveSetting", key: "runTarget", value: val })
@@ -1346,7 +1281,6 @@ if (sub) sub.innerText = 'Member yang telah mencapai target ' + val + 'x kehadir
 renderPrestasiList();
 }).catch(function() { toast("Gagal menyimpan target.", "error"); });
 }
-
 function saveEmergencyWA() {
 const raw = document.getElementById('settingEmergencyWA').value.trim();
 const val = normalizeWaNumber(raw);
@@ -1355,7 +1289,6 @@ callApi({ action: "saveSetting", key: "emergencyWA", value: val })
 .then(function() { currentSettings.emergencyWA = val; document.getElementById('settingEmergencyWA').value = val; toast("Nomor WA darurat berhasil disimpan.", "success"); })
 .catch(function() { toast("Gagal menyimpan nomor darurat.", "error"); });
 }
-
 function toggleSejarahEdit() {
 const viewMode = document.getElementById('sejarahViewMode');
 const editMode = document.getElementById('sejarahEditMode');
@@ -1364,7 +1297,6 @@ document.getElementById('sejarahEditTextarea').value = currentSettings.sejarahKl
 viewMode.classList.add('hidden'); editMode.classList.remove('hidden');
 } else { viewMode.classList.remove('hidden'); editMode.classList.add('hidden'); }
 }
-
 function saveSejarahKlub() {
 const val = document.getElementById('sejarahEditTextarea').value;
 callApi({ action: "saveSetting", key: "sejarahKlub", value: val })
@@ -1376,7 +1308,6 @@ document.getElementById('sejarahViewMode').classList.remove('hidden');
 document.getElementById('sejarahEditMode').classList.add('hidden');
 }).catch(function() { toast("Gagal menyimpan sejarah klub.", "error"); });
 }
-
 function fetchDropdownMembers() {
 fetch(GOOGLE_APP_URL + '?action=getMembers')
 .then(function(res) { return res.json(); })
@@ -1388,7 +1319,6 @@ renderPrestasiList(); renderBelumLunasList(); renderMemberStatsCards();
 }
 }).catch(function() {});
 }
-
 function loadMembersData() {
 fetch(GOOGLE_APP_URL + '?action=getMembers')
 .then(function(res) { return res.json(); })
@@ -1400,7 +1330,6 @@ globalMembersData = res.data;
 renderMembersTable(); renderMemberStatsCards(); renderBelumLunasList(); renderPrestasiList();
 });
 }
-
 function renderPrestasiList() {
 const container = document.getElementById('prestasiList');
 if (!container) return;
@@ -1418,7 +1347,6 @@ return '<div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex it
 '</div></div>';
 }).join('');
 }
-
 function renderBelumLunasList() {
 const container = document.getElementById('belumLunasList');
 if (!container) return;
@@ -1431,20 +1359,17 @@ return '<div class="flex justify-between items-center bg-slate-950 border border
 '<button onclick="sendReminderWA(\'' + escapeHtml(m.phone) + '\',\'' + escapeHtml((m.hashname || '-').replace(/'/g, '')) + '\')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg">💬 WA</button></div>';
 }).join('');
 }
-
 function sendReminderWA(phone, nama) {
 const cleanPhone = normalizeWaNumber(phone);
 if (!cleanPhone) { toast("Nomor WhatsApp member ini tidak tersedia.", "warn"); return; }
 const pesan = encodeURIComponent('Halo ' + nama + '\nMau reminder santai nih. Iuran Member Hitman-nya saat ini belum tercatat lunas di data kami.\nJika sudah bayar, abaikan saja pesan ini. Jika belum, yuk boleh dibantu diselesaikan pembayarannya.\nTerima kasih atas kerja samanya,\n*Hitman Pekanbaru Hashing Club*.');
 window.open('https://wa.me/' + cleanPhone + '?text=' + pesan, '_blank');
 }
-
 function openEmergencyWA() {
 const num = normalizeWaNumber(currentSettings.emergencyWA);
 if (!num) { toast("Nomor WA darurat belum diatur oleh admin.", "warn"); return; }
 window.open('https://wa.me/' + num, '_blank');
 }
-
 function renderMemberStatsCards() {
 const el = document.getElementById('databaseStatsCards');
 if (!el) return;
@@ -1457,9 +1382,8 @@ el.innerHTML =
 '<div class="bg-emerald-950/60 border border-emerald-800 rounded-2xl p-3"><p class="text-xl font-black text-emerald-400">' + aktif + '</p><p class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">🟢 Aktif</p></div>' +
 '<div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-3"><p class="text-xl font-black text-slate-300">' + nonAktif + '</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">⚪ Non Aktif</p></div>' +
 '<div class="bg-sky-950/60 border border-sky-800 rounded-2xl p-3"><p class="text-xl font-black text-sky-400">' + lunas + '</p><p class="text-[10px] font-bold text-sky-300 uppercase tracking-wider">✅ Lunas</p></div>' +
-'<div class="bg-rose-950/60 border border-rose-800 rounded-2xl p-3"><p class="text-xl font-black text-rose-400">' + belumLunas + '</p><p class="text-[10px] font-bold text-rose-300 uppercase tracking-wider">❌ Belum</p></div>';
+'<div class="bg-rose-950/60 border border-rose-800 rounded-2xl p-3"><p class="text-xl font-black text-rose-400">' + belumLunas + '</p><p class="text-[10px] font-bold text-rose-400 uppercase tracking-wider">❌ Belum</p></div>';
 }
-
 function renderMembersTable() {
 const tbody = document.getElementById('databaseTableBody');
 if (!tbody) return;
@@ -1486,7 +1410,6 @@ return '<tr class="hover:bg-slate-800/40">' +
 '<td class="p-3 text-center"><button onclick="showMemberCard(' + idx + ')" class="bg-emerald-800 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg text-[10px]">🪪 Kartu</button></td></tr>';
 }).join('');
 }
-
 function toggleMemberStatus(id, currentStatus) {
 const newStatus = currentStatus === "Aktif" ? "Non Aktif" : "Aktif";
 if (!confirm('Ubah status member ini menjadi "' + newStatus + '"?')) return;
@@ -1496,7 +1419,6 @@ if (res.status === "success") { toast('Status member diubah menjadi ' + newStatu
 else { toast(res.message || "Gagal mengubah status member.", "error"); }
 }).catch(function() { toast("Gagal mengubah status member.", "error"); });
 }
-
 function showMemberCard(index) {
 const m = globalMembersData[index];
 if (!m) return;
@@ -1509,7 +1431,6 @@ new QRCode(document.getElementById("modalQrcode"), { text: m.id || "MEMBER", wid
 document.getElementById('cardModal').classList.remove('hidden');
 }
 function closeCardModal() { document.getElementById('cardModal').classList.add('hidden'); }
-
 function handleRegister(e) {
 e.preventDefault();
 const btn = document.getElementById('btnSubmit');
@@ -1532,7 +1453,6 @@ toast('Pendaftaran berhasil! ID Member: ' + idMember, "success", 6000);
 document.getElementById('regForm').reset(); fetchDropdownMembers();
 }).catch(function() { btn.disabled = false; btn.innerText = "🪪 Buat ID Member & Simpan"; toast("Gagal sinkron ke server.", "error"); });
 }
-
 function downloadCard(elementId, filename) {
 const cardElement = document.getElementById(elementId);
 if (!cardElement) return;
@@ -1543,7 +1463,6 @@ link.href = imageURL; link.download = filename;
 document.body.appendChild(link); link.click(); document.body.removeChild(link);
 });
 }
-
 function loadKasData() {
 const tbody = document.getElementById('kasTableBody');
 tbody.innerHTML = '<tr><td colspan="5" class="p-3 text-center text-slate-500">Memuat data kas...</td></tr>';
@@ -1557,14 +1476,12 @@ globalKasData = []; renderKasTable();
 }
 });
 }
-
 function handleInputKas(e) {
 e.preventDefault();
 callApi({ action: "addKasAndVerifyMember", tanggal: document.getElementById('kasDate').value, tipe: document.getElementById('kasType').value, keterangan: document.getElementById('kasDesc').value, jumlah: document.getElementById('kasAmount').value })
 .then(function(res) { if (res.status !== 'success') throw new Error(res.message || 'Gagal menyimpan transaksi.'); toast("Transaksi berhasil dicatat!", "success"); e.target.reset(); loadKasData(); fetchDropdownMembers(); })
 .catch(function(err) { toast(err.message || "Gagal mencatat transaksi.", "error"); });
 }
-
 function openEditKasModal(rowIndex) {
 const k = globalKasData.find(function(item) { return item.rowIndex === rowIndex; });
 if (!k) return;
@@ -1577,21 +1494,18 @@ document.getElementById('editKasDate').max = getTodayStr();
 document.getElementById('editKasModal').classList.remove('hidden');
 }
 function closeEditKasModal() { document.getElementById('editKasModal').classList.add('hidden'); }
-
 function saveEditKas() {
 const rowIndex = document.getElementById('editKasRowIndex').value;
 callApi({ action: "editKasEntry", rowIndex: rowIndex, tanggal: document.getElementById('editKasDate').value, tipe: document.getElementById('editKasType').value, keterangan: document.getElementById('editKasDesc').value, jumlah: document.getElementById('editKasAmount').value })
 .then(function(res) { if (res.status !== 'success') throw new Error(res.message || 'Gagal menyimpan perubahan.'); toast("Transaksi diperbarui.", "success"); closeEditKasModal(); loadKasData(); fetchDropdownMembers(); })
 .catch(function(err) { toast(err.message || "Gagal memperbarui transaksi.", "error"); });
 }
-
 function deleteKasEntryUI() {
 if (!confirm("Hapus transaksi ini?\nJika transaksi ini adalah uang masuk iuran member, status iuran member tersebut akan kembali menjadi Belum Lunas.")) return;
 callApi({ action: "deleteKasEntry", rowIndex: document.getElementById('editKasRowIndex').value })
 .then(function(res) { if (res.status !== 'success') throw new Error(res.message || 'Gagal menghapus transaksi.'); toast("Transaksi kas dihapus.", "success"); closeEditKasModal(); loadKasData(); fetchDropdownMembers(); })
 .catch(function(err) { toast(err.message || "Gagal menghapus transaksi.", "error"); });
 }
-
 function downloadKasMonthlyReport() {
 const monthInput = document.getElementById('kasReportMonth').value;
 if (!monthInput) { toast("Pilih bulan laporan terlebih dahulu.", "warn"); return; }
@@ -1626,7 +1540,6 @@ document.body.appendChild(link); link.click(); document.body.removeChild(link); 
 toast('Laporan kas bulan ' + monthInput + ' berhasil diunduh.', "success");
 }).catch(function() { toast("Gagal membuat laporan kas.", "error"); });
 }
-
 function openQrisModal() {
 document.getElementById('qrisPayModal').classList.remove('hidden');
 if (globalMembersData.length === 0) fetchDropdownMembers();
@@ -1636,7 +1549,6 @@ document.getElementById('qrisMemberDropdown').classList.add('hidden');
 updateQrisCalculation();
 }
 function closeQrisModal() { document.getElementById('qrisPayModal').classList.add('hidden'); }
-
 function filterQrisMemberList() {
 const dropdown = document.getElementById('qrisMemberDropdown');
 const query = document.getElementById('qrisSearchInput').value.trim().toLowerCase();
@@ -1654,21 +1566,18 @@ return '<div onclick="selectQrisMember(\'' + String(m.nama).replace(/'/g, "\\'")
 }
 dropdown.classList.remove('hidden');
 }
-
 function selectQrisMember(nama, id, hashname) {
 document.getElementById('qrisSelectMember').value = nama;
 document.getElementById('qrisSearchInput').value = nama + ' (' + hashname + ')';
 document.getElementById('qrisMemberDropdown').classList.add('hidden');
 updateQrisCalculation();
 }
-
 document.addEventListener('click', function(e) {
 const wrap = document.getElementById('qrisSearchInput');
 const dropdown = document.getElementById('qrisMemberDropdown');
 if (!wrap || !dropdown) return;
 if (e.target !== wrap && !dropdown.contains(e.target)) dropdown.classList.add('hidden');
 });
-
 function updateQrisCalculation() {
 const memberName = document.getElementById('qrisSelectMember').value || "MEMBER";
 const startMonth = document.getElementById('qrisStartMonth').value;
@@ -1683,7 +1592,6 @@ const payPayload = JSON.stringify({ type: "IURAN_HITMAN_HASH", member: memberNam
 document.getElementById('qrisDisplayCode').innerHTML = "";
 new QRCode(document.getElementById("qrisDisplayCode"), { text: payPayload, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.L });
 }
-
 function processQrisPayment() {
 const memberName = document.getElementById('qrisSelectMember').value;
 if (!memberName) { toast("Silakan pilih nama member terlebih dahulu!", "warn"); return; }
@@ -1701,7 +1609,6 @@ callApi({ action: "submitPaymentClaim", tanggal: today, member: memberName, juml
 .catch(function() { toast("Gagal mengirim pengajuan ke server.", "error"); })
 .finally(function() { btn.disabled = false; btn.innerText = "Saya Sudah Transfer, Ajukan Verifikasi"; });
 }
-
 function loadPendingPayments() {
 const list = document.getElementById('pendingPaymentsList');
 if (!list) return;
@@ -1719,14 +1626,12 @@ return '<div class="flex justify-between items-center bg-slate-950 border border
 } else { list.innerHTML = '<p class="text-slate-500 text-center py-2">Tidak ada pengajuan pembayaran yang menunggu verifikasi.</p>'; }
 }).catch(function() { list.innerHTML = '<p class="text-rose-400 text-center py-2">Gagal memuat pending payment.</p>'; });
 }
-
 function approvePendingPayment(id, member, jumlah, masaBerlaku) {
 if (!confirm('Setujui pembayaran Rp ' + parseInt(jumlah).toLocaleString('id-ID') + ' dari ' + member + '?')) return;
 callApi({ action: "approvePaymentClaim", id: id, tanggal: getTodayStr(), tipe: "Masuk", keterangan: 'Iuran ' + member + ' s.d ' + masaBerlaku, jumlah: jumlah, memberName: member, masaBerlaku: masaBerlaku })
 .then(function() { toast('Pembayaran ' + member + ' disetujui & dicatat ke kas.', "success"); loadPendingPayments(); loadKasData(); fetchDropdownMembers(); })
 .catch(function() { toast("Gagal menyetujui pembayaran.", "error"); });
 }
-
 function loadCameraDevices(showError) {
 const select = document.getElementById('scannerCameraSelect');
 if (!select || !window.Html5Qrcode) return;
@@ -1737,7 +1642,6 @@ select.innerHTML = '<option value="">Otomatis (default belakang HP)</option>';
 if (devices && devices.some(function(d) { return d.id === currentValue; })) select.value = currentValue;
 }).catch(function() { if (showError) toast("Gagal mendeteksi kamera. Pastikan izin kamera sudah diberikan dan halaman HTTPS.", "warn", 6000); });
 }
-
 function stopQrScanner(silent) {
 if (html5QrCode) {
 html5QrCode.stop().catch(function() {}).finally(function() {
@@ -1747,7 +1651,6 @@ if (!silent) { const box = document.getElementById('scanStatusBox'); if (box) bo
 });
 }
 }
-
 function explainCameraError(err) {
 const name = err && err.name ? err.name : '';
 const raw = err && err.message ? err.message : String(err || '');
@@ -1765,7 +1668,6 @@ return 'Tidak ditemukan kamera pada perangkat ini.';
 }
 return 'Gagal membuka kamera (' + (name || 'Error') + (raw ? ': ' + raw : '') + ').';
 }
-
 function startCameraWithFallback(selectedCameraId, config, onScanSuccess) {
 return Html5Qrcode.getCameras().catch(function() { return []; }).then(function(devices) {
 const attempts = [];
@@ -1791,24 +1693,20 @@ return tryNext(index + 1);
 return tryNext(0);
 });
 }
-
 function startQrScanner() {
 if (isScannerStarting) return;
-
 if (!window.isSecureContext) {
 var readerBox = document.getElementById('reader');
 if (readerBox) readerBox.innerHTML = '<p class="text-xs text-rose-400 p-3 font-semibold leading-relaxed">⚠️ Kamera diblokir browser karena halaman tidak aman (http).<br><br>Solusi: buka situs melalui URL web app Apps Script yang ber-<b>HTTPS</b> (https://script.google.com/macros/s/.../exec), atau lewat localhost. Kamera TIDAK bisa aktif melalui http://.</p>';
 toast("Kamera butuh HTTPS. Buka via URL web app Apps Script (https), bukan http.", "error", 10000);
 return;
 }
-
 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
 var readerBox2 = document.getElementById('reader');
 if (readerBox2) readerBox2.innerHTML = '<p class="text-xs text-rose-400 p-3 font-semibold leading-relaxed">⚠️ Browser ini tidak mengizinkan akses kamera di halaman ini (kemungkinan dibatasi oleh iframe Apps Script). Coba buka di tab browser biasa (bukan dari dalam app lain/WebView), atau gunakan browser lain.</p>';
 toast("API kamera tidak tersedia di konteks halaman ini.", "error", 8000);
 return;
 }
-
 isScannerStarting = true; isScanningLocked = false;
 const statusBox = document.getElementById('scanStatusBox');
 if (statusBox) statusBox.classList.add('hidden');
@@ -1816,15 +1714,28 @@ if (!window.Html5Qrcode) { toast('Library scanner belum termuat sempurna.', "err
 if (html5QrCode) { html5QrCode.stop().catch(function() {}).finally(function() { initScannerInstance(); }); }
 else { initScannerInstance(); }
 }
-
 function initScannerInstance() {
 const reader = document.getElementById('reader');
 if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Menyiapkan kamera...</p>';
-
 try { html5QrCode = new Html5Qrcode("reader"); } catch (err) {
 if (reader) reader.innerHTML = '<p class="text-xs text-rose-400 p-3">Gagal membuat instance scanner.</p>';
 toast("Gagal membuat instance scanner.", "error", 5000); isScannerStarting = false; return;
 }
+/* === iOS FIX: tap pada area reader untuk paksa play video === */
+var readerEl = document.getElementById('reader');
+if (readerEl) {
+readerEl.addEventListener('click', function iosTapPlay() {
+var v = readerEl.querySelector('video');
+if (v && v.paused) {
+v.muted = true;
+v.playsInline = true;
+v.setAttribute('playsinline', 'true');
+v.setAttribute('webkit-playsinline', 'true');
+v.play().catch(function(){});
+}
+});
+}
+/* === END iOS FIX tap === */
 const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const config = isIOSDevice ? { fps: 10 } : { fps: 10, qrbox: { width: 220, height: 220 } };
 const onScanSuccess = function(qrCodeMessage) { if (!isScanningLocked) { isScanningLocked = true; handleSuccessfulScan(qrCodeMessage); } };
@@ -1832,6 +1743,36 @@ const selectedCameraId = document.getElementById('scannerCameraSelect') ? docume
 startCameraWithFallback(selectedCameraId, config, onScanSuccess).then(function() {
 toast("Kamera scanner aktif.", "success");
 loadCameraDevices(false);
+/* === iOS FIX: paksa video play inline setelah kamera start === */
+setTimeout(function() {
+var videoEl = document.querySelector('#reader video');
+if (videoEl) {
+videoEl.setAttribute('playsinline', 'true');
+videoEl.setAttribute('webkit-playsinline', 'true');
+videoEl.setAttribute('muted', 'true');
+videoEl.setAttribute('autoplay', 'true');
+videoEl.muted = true;
+videoEl.playsInline = true;
+if (videoEl.paused) {
+videoEl.play().then(function() {
+console.log('iOS video play OK');
+}).catch(function(err) {
+console.warn('iOS video play gagal:', err);
+});
+}
+videoEl.addEventListener('loadedmetadata', function() {
+if (videoEl.videoHeight === 0) {
+videoEl.style.minHeight = '240px';
+}
+});
+setTimeout(function() {
+if (videoEl.paused || videoEl.readyState < 2) {
+videoEl.play().catch(function(){});
+}
+}, 2000);
+}
+}, 300);
+/* === END iOS FIX video play === */
 }).catch(function(err) {
 const msg = explainCameraError(err);
 if (reader) reader.innerHTML = '<p class="text-xs text-rose-400 p-3 leading-relaxed">' + msg + '</p>';
@@ -1840,7 +1781,6 @@ try { if (html5QrCode) html5QrCode.clear(); } catch (e) {}
 html5QrCode = null;
 }).finally(function() { isScannerStarting = false; });
 }
-
 function handleSuccessfulScan(qrCodeMessage) {
 const statusBox = document.getElementById('scanStatusBox');
 const statusText = document.getElementById('scanStatusText');
@@ -1871,21 +1811,18 @@ statusText.innerText = "❌ Gagal koneksi ke server.";
 toast("Gagal memproses absensi.", "error");
 }).finally(function() { setTimeout(function() { isScanningLocked = false; }, 3000); });
 }
-
 function updateDaftarRunActiveInfo(item) {
 const el = document.getElementById('daftarRunActiveInfo');
 if (!el) return;
 if (item) { const dateLabel = (item.tanggalAcara && item.tanggalAcara !== '-') ? (' — 📅 ' + item.tanggalAcara) : ''; el.innerText = '🏁 Mendaftar untuk Run #' + (item.nomorRun || '-') + dateLabel; }
 else { el.innerText = "Belum ada jadwal Run aktif."; }
 }
-
 function compareHareDate(a, b) {
 const da = (a.tanggalAcara && a.tanggalAcara !== '-') ? a.tanggalAcara : '9999-99-99';
 const db = (b.tanggalAcara && b.tanggalAcara !== '-') ? b.tanggalAcara : '9999-99-99';
 if (da !== db) return da.localeCompare(db);
 return (parseInt(a.nomorRun) || 0) - (parseInt(b.nomorRun) || 0);
 }
-
 function renderFeaturedNextRun(container, item) {
 if (!container) return;
 if (!item) { container.innerHTML = '<p class="text-slate-500 text-xs text-center py-6">Belum ada jadwal run mendatang yang terdaftar.</p>'; return; }
@@ -1903,7 +1840,6 @@ container.innerHTML = '<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-c
 '<button onclick="openHareModal(\'' + item.id + '\')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-5 py-3 rounded-xl border border-slate-700 transition">👁 Detail Hare</button>' +
 '</div></div></div>';
 }
-
 function renderHarePreviewGallery(container, items) {
 if (!container) return;
 if (!items || items.length === 0) { container.innerHTML = '<p class="text-slate-500 text-xs col-span-full text-center py-8">Tidak ada jadwal Hare berikutnya.</p>'; return; }
@@ -1916,7 +1852,6 @@ return '<div onclick="openHareModal(\'' + h.id + '\')" class="relative bg-slate-
 (h.lokasi ? '<p class="text-[10px] text-slate-400">📍 ' + escapeHtml(h.lokasi) + '</p>' : '') + '</div></div>';
 }).join('');
 }
-
 function renderEventTerbaruHome(container, items) {
 if (!container) return;
 if (!items || items.length === 0) { container.innerHTML = '<p class="text-slate-500 text-xs col-span-full text-center py-4">Belum ada event mendatang yang terdaftar.</p>'; return; }
@@ -1929,7 +1864,6 @@ return '<div onclick="openHareModal(\'' + h.id + '\')" class="bg-slate-900/60 bo
 '<p class="text-[10px] text-slate-400">📍 ' + escapeHtml(h.lokasi || 'Posko HITMAN') + '</p></div></div>';
 }).join('');
 }
-
 function renderHareAdminList(container, items) {
 if (!container) return;
 if (!items || items.length === 0) { container.innerHTML = '<tr><td colspan="3" class="p-2 text-center text-slate-500">Belum ada data Hare.</td></tr>'; return; }
@@ -1945,7 +1879,6 @@ return '<tr class="hover:bg-slate-800/40 ' + (String(h.id) === nextId ? 'bg-ambe
 '<button onclick="deleteHareAdmin(\'' + h.id + '\')" class="text-rose-500 font-bold" title="Hapus Hare">✕</button></td></tr>';
 }).join('');
 }
-
 function loadHares() {
 fetch(GOOGLE_APP_URL + '?action=getHares')
 .then(function(res) { return res.json(); })
@@ -1958,7 +1891,6 @@ globalHaresData = []; processHaresData();
 }
 }).catch(function() { processHaresData(); });
 }
-
 function handleAddHare(e) {
 e.preventDefault();
 const btn = document.getElementById('btnSubmitHare');
@@ -1987,7 +1919,6 @@ fileToCompressedDataUrl(fileInput.files[0], 600, 0.5).then(function(dataUrl) { d
 .catch(function() { toast("Gagal memproses gambar.", "error"); btn.disabled = false; btn.innerText = editingHareId ? "💾 Update Hare" : "➕ Tambah Hare"; });
 } else { doSave(""); }
 }
-
 function startEditHare(id) {
 const h = globalHaresData.find(function(x) { return String(x.id) === String(id); });
 if (!h) return;
@@ -2004,7 +1935,6 @@ document.getElementById('btnSubmitHare').innerText = "💾 Update Hare";
 document.getElementById('btnCancelEditHare').classList.remove('hidden');
 document.getElementById('hareAdminForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
-
 function cancelEditHare() {
 editingHareId = null;
 document.getElementById('hareAdminForm').reset();
@@ -2014,13 +1944,11 @@ document.getElementById('hareAdminPhotoHint').classList.add('hidden');
 document.getElementById('btnSubmitHare').innerText = "➕ Tambah Hare";
 document.getElementById('btnCancelEditHare').classList.add('hidden');
 }
-
 function deleteHareAdmin(id) {
 if (!confirm("Hapus data Hare ini?")) return;
 if (editingHareId === id) cancelEditHare();
 callApi({ action: "deleteHare", id: id }).then(function() { toast("Hare dihapus.", "success"); loadHares(); });
 }
-
 function openHareModal(id) {
 const h = globalHaresData.find(function(x) { return String(x.id) === String(id); });
 if (!h) return;
@@ -2034,7 +1962,6 @@ descEl.innerText = (h.deskripsi && h.deskripsi.trim() !== '') ? h.deskripsi : 'T
 document.getElementById('hareDetailModal').classList.remove('hidden');
 }
 function closeHareModal() { document.getElementById('hareDetailModal').classList.add('hidden'); }
-
 function handleAddGalleryPhoto(e) {
 e.preventDefault();
 const btn = document.getElementById('btnSubmitGallery');
@@ -2051,7 +1978,6 @@ callApi({ action: "addGalleryPhoto", imageUrl: imageUrl, caption: caption })
 }).catch(function() { toast("Gagal memproses gambar.", "error"); btn.disabled = false; btn.innerText = "➕ Tambah Foto"; });
 } else { btn.disabled = false; btn.innerText = "➕ Tambah Foto"; }
 }
-
 function loadGallery() {
 fetch(GOOGLE_APP_URL + '?action=getGallery')
 .then(function(res) { return res.json(); })
@@ -2065,7 +1991,6 @@ renderGalleryGrid();
 }
 });
 }
-
 function renderGalleryAdminGrid() {
 const grid = document.getElementById('galleryAdminGrid');
 if (!grid) return;
@@ -2080,7 +2005,6 @@ return '<div class="relative rounded-xl overflow-hidden border border-slate-800 
 '<button onclick="deleteGalleryPhotoAdmin(\'' + g.id + '\')" class="absolute top-1 right-1 bg-rose-600 hover:bg-rose-500 text-white text-[10px] font-bold w-6 h-6 rounded-full shadow z-10 flex items-center justify-center">✕</button></div>';
 }).join('');
 }
-
 function openGalleryModalByIndex(idx) {
 const g = globalGalleryData[idx];
 if (!g) return;
@@ -2089,12 +2013,10 @@ document.getElementById('galleryModalCaption').innerText = g.caption || "";
 document.getElementById('galleryDetailModal').classList.remove('hidden');
 }
 function closeGalleryModal() { document.getElementById('galleryDetailModal').classList.add('hidden'); }
-
 function deleteGalleryPhotoAdmin(id) {
 if (!confirm("Hapus foto dari galeri?")) return;
 callApi({ action: "deleteGalleryPhoto", id: id }).then(function() { toast("Foto dihapus.", "success"); loadGallery(); });
 }
-
 function setRunRegMode(mode) {
 runRegMode = mode;
 const singleBtn = document.getElementById('runRegModeSingleBtn');
@@ -2111,7 +2033,6 @@ multiBtn.classList.remove('bg-emerald-700','text-white'); multiBtn.classList.add
 singleWrap.classList.remove('hidden'); multiWrap.classList.add('hidden');
 }
 }
-
 function handleRunRegistration(e) {
 e.preventDefault();
 const payload = { action: "submitRunRegistration", tanggal: getTodayStr() };
@@ -2144,7 +2065,6 @@ document.getElementById('runRegNameList').value = "";
 loadRunRegistrations();
 }).catch(function() { toast("Gagal mendaftar.", "error"); });
 }
-
 function loadRunRegistrations() {
 fetch(GOOGLE_APP_URL + '?action=getRunRegistrations')
 .then(function(res) { return res.json(); })
@@ -2158,7 +2078,6 @@ renderRunRegList();
 }
 });
 }
-
 function sendRunRecapToWA() {
 if (globalRunRegData.length === 0) { toast("Belum ada peserta terdaftar untuk direkap.", "warn"); return; }
 const members = globalRunRegData.filter(function(r) { return r.tipe === 'Member'; });
@@ -2174,12 +2093,10 @@ pesan += visitors.length > 0 ? visitors.map(function(r, i) { return (i + 1) + '.
 pesan += '\n*Total Peserta: ' + globalRunRegData.length + ' orang*\n_Hitman Pekanbaru Hashing Club_ 🏃';
 window.open('https://wa.me/?text=' + encodeURIComponent(pesan), '_blank');
 }
-
 function resetRunRegistrationsAdmin() {
 if (!confirm("Reset daftar peserta untuk sesi run baru?\nData pendaftaran yang sudah ada akan diarsipkan otomatis ke tab sheet baru di Google Sheets (tidak dihapus), dan form/daftar di halaman ini akan kosong kembali untuk pendaftaran run berikutnya.")) return;
 callApi({ action: "resetRunRegistrations" }).then(function() { toast("Daftar peserta direset. Data lama sudah diarsipkan ke tab baru.", "success"); loadRunRegistrations(); });
 }
-
 function loadKamusHashData() {
 if (currentSettings.kamusHashData) {
 try { const parsed = JSON.parse(currentSettings.kamusHashData); globalKamusHash = Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_KAMUS_HASH.slice(); }
@@ -2187,13 +2104,11 @@ catch (e) { globalKamusHash = DEFAULT_KAMUS_HASH.slice(); }
 } else { globalKamusHash = DEFAULT_KAMUS_HASH.slice(); }
 renderKamusHash();
 }
-
 function toggleKamusAccordion(id) {
 if (editingKamusId) return;
 openKamusId = (openKamusId === id) ? null : id;
 renderKamusHash();
 }
-
 function renderKamusHash() {
 const container = document.getElementById('kamusGrid');
 if (!container) return;
@@ -2233,10 +2148,8 @@ return '<div class="bg-slate-900/90 border border-slate-800 rounded-2xl overflow
 }).join('');
 container.innerHTML = html;
 }
-
 function startKamusEdit(id) { editingKamusId = id; openKamusId = id; renderKamusHash(); }
 function cancelKamusEdit() { editingKamusId = null; renderKamusHash(); }
-
 function saveKamusItemEdit(id) {
 const termEl = document.getElementById('kamusEditTerm_' + id);
 const defEl = document.getElementById('kamusEditDef_' + id);
@@ -2246,14 +2159,12 @@ const item = globalKamusHash.find(function(g) { return g.id === id; });
 if (item) { item.term = term; item.def = def; }
 editingKamusId = null; persistKamusHash();
 }
-
 function deleteKamusItem(id) {
 if (!confirm("Hapus istilah ini dari Kamus Hash?")) return;
 globalKamusHash = globalKamusHash.filter(function(g) { return g.id !== id; });
 if (openKamusId === id) openKamusId = null;
 persistKamusHash();
 }
-
 function addKamusItem() {
 const termEl = document.getElementById('kamusNewTerm');
 const defEl = document.getElementById('kamusNewDef');
@@ -2262,13 +2173,11 @@ if (!term || !def) { toast("Isi istilah dan definisi terlebih dahulu.", "warn");
 globalKamusHash.push({ id: 'k' + Date.now(), term: term, def: def });
 persistKamusHash();
 }
-
 function persistKamusHash() {
 callApi({ action: "saveSetting", key: "kamusHashData", value: JSON.stringify(globalKamusHash) })
 .then(function() { currentSettings.kamusHashData = JSON.stringify(globalKamusHash); toast("Kamus Hash berhasil disimpan.", "success"); renderKamusHash(); })
 .catch(function() { toast("Gagal menyimpan Kamus Hash.", "error"); });
 }
-
 function downloadCSV() {
 toast("Menyiapkan laporan member...", "info", 2000);
 fetch(GOOGLE_APP_URL + '?action=getMembers')
@@ -2293,7 +2202,6 @@ document.body.appendChild(link); link.click(); document.body.removeChild(link); 
 toast('Laporan ' + rows.length + ' member berhasil diunduh.', "success");
 }).catch(function() { toast("Gagal mengambil data member dari server.", "error"); });
 }
-
 function openAdminModal() {
 if (adminSessionToken) {
 document.getElementById('adminPanel').classList.remove('hidden');
@@ -2306,7 +2214,6 @@ document.getElementById('loginLockoutMsg').classList.add('hidden');
 document.getElementById('loginAttemptInfo').innerText = '';
 }
 function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
-
 function verifyAdmin() {
 const pin = document.getElementById('adminPinInput').value;
 const lockoutMsg = document.getElementById('loginLockoutMsg');
@@ -2341,7 +2248,6 @@ if (res.message && res.message.indexOf('Sisa') !== -1) attemptInfo.innerText = r
 }
 }).catch(function() { toast("Gagal koneksi ke server.", "error"); attemptInfo.innerText = ''; });
 }
-
 function logoutAdmin() {
 adminSessionToken = null;
 clearInterval(sessionTimerInterval);
@@ -2363,10 +2269,8 @@ editingKamusId = null;
 renderKamusHash();
 switchPage('home');
 }
-
 function openDatabaseModal() { document.getElementById('databaseModal').classList.remove('hidden'); loadMembersData(); }
 function closeDatabaseModal() { document.getElementById('databaseModal').classList.add('hidden'); }
-
 function openEventTerbaruModal() { document.getElementById('eventTerbaruModal').classList.remove('hidden'); }
 function closeEventTerbaruModal() { document.getElementById('eventTerbaruModal').classList.add('hidden'); }
 function openPrestasiModal() { document.getElementById('prestasiModal').classList.remove('hidden'); }

@@ -280,7 +280,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <div class="space-y-2 pt-2">
 <button type="button" onclick="startQrScanner()" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs transition">▶ Nyalakan Kamera Scanner</button>
 <button type="button" onclick="stopQrScanner()" class="w-full bg-rose-600/80 hover:bg-rose-600 text-white font-bold py-2 rounded-xl text-xs transition">⏹ Matikan Kamera</button>
-<!-- Fallback: Upload dari galeri untuk iOS yang bermasalah -->
 <input type="file" id="galleryQrInput" accept="image/*" class="hidden" onchange="handleGalleryQrScan(event)">
 <button type="button" onclick="document.getElementById('galleryQrInput').click()" class="w-full bg-blue-700/80 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-[10px] transition">📁 Scan dari Foto (Upload dari Galeri)</button>
 </div>
@@ -508,6 +507,92 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <h3 class="font-bold text-xs text-brand-gold tracking-wide">🆘 Nomor WA Darurat</h3>
 <input type="text" inputmode="numeric" autocomplete="off" id="settingEmergencyWA" placeholder="Contoh: 082277838998" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full border border-slate-700 bg-slate-950 text-white rounded-xl p-2 outline-none text-xs">
 <button onclick="saveEmergencyWA()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 rounded-xl shadow transition text-xs">Simpan Nomor Darurat</button>
+</div>
+</div>
+<!-- === CARD BARU: NOTIFIKASI WHATSAPP === -->
+<div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-4 card-hover md:col-span-2">
+<h3 class="font-bold text-sm text-brand-gold tracking-wide flex items-center gap-2">📲 Notifikasi WhatsApp Otomatis</h3>
+<!-- Konfigurasi Gateway -->
+<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
+<p class="text-xs font-bold text-white">⚙️ Konfigurasi Gateway WA</p>
+<p class="text-[10px] text-slate-400 leading-relaxed">Mode saat ini: <b class="text-brand-gold">wa.me (Gratis, Semi-Otomatis)</b>. Sistem membuat link, admin klik → WA terbuka dengan pesan terisi → tinggal kirim. Jika ingin otomatis penuh (butuh biaya), hubungi developer untuk integrasi Fonnte/Wablas.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+<div>
+<label class="block font-semibold text-slate-400 mb-1">Provider Gateway</label>
+<select id="waGatewayProvider" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none">
+<option value="">— wa.me (Gratis, Semi-Otomatis) —</option>
+<option value="fonnte" disabled>Fonnte (Otomatis Penuh - Coming Soon)</option>
+<option value="wablas" disabled>Wablas (Otomatis Penuh - Coming Soon)</option>
+</select>
+</div>
+<div>
+<label class="block font-semibold text-slate-400 mb-1">API Key / Token Gateway</label>
+<input type="text" id="waGatewayApiKey" placeholder="Isi jika pakai gateway berbayar" disabled class="w-full bg-slate-950/50 border border-slate-700 text-slate-500 rounded-xl p-2 outline-none">
+</div>
+</div>
+<div>
+<label class="block font-semibold text-slate-400 mb-1">Nomor WA Grup (untuk Rekap Absensi)</label>
+<input type="text" inputmode="numeric" id="waGroupNumber" placeholder="Contoh: 081234567890 atau 62812xxx" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none">
+</div>
+<div class="flex flex-wrap gap-2">
+<button onclick="saveWaGatewaySettings()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition">💾 Simpan Konfigurasi</button>
+<button onclick="testWaGatewayUI()" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition">🧪 Test Koneksi Gateway</button>
+</div>
+</div>
+<!-- Template Pesan -->
+<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
+<p class="text-xs font-bold text-white">📝 Template Pesan Reminder Iuran</p>
+<p class="text-[10px] text-slate-400">Placeholder tersedia: <code class="text-brand-gold">{nama}</code>, <code class="text-brand-gold">{hashname}</code>, <code class="text-brand-gold">{id}</code>, <code class="text-brand-gold">{bulan}</code></p>
+<textarea id="waTemplateReminder" rows="5" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none text-xs leading-relaxed"></textarea>
+<button onclick="saveWaTemplate()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition">💾 Simpan Template</button>
+</div>
+<!-- Reminder Otomatis -->
+<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
+<p class="text-xs font-bold text-white">⏰ Reminder Iuran Otomatis (Bulanan)</p>
+<p class="text-[10px] text-slate-400 leading-relaxed">Fitur ini membutuhkan gateway berbayar untuk bekerja otomatis. Saat ini mode wa.me hanya bisa <b>manual</b>. Namun Anda tetap bisa <b>kirim massal sekarang</b> (link akan disiapkan, klik satu per satu).</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+<div>
+<label class="block font-semibold text-slate-400 mb-1">Aktifkan Reminder Otomatis</label>
+<select id="waAutoReminderEnabled" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none">
+<option value="false">❌ Nonaktif (mode wa.me)</option>
+<option value="true" disabled>✅ Aktif (butuh gateway)</option>
+</select>
+</div>
+<div>
+<label class="block font-semibold text-slate-400 mb-1">Tanggal Kirim Tiap Bulan</label>
+<select id="waReminderDate" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none"></select>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<button onclick="saveAutoReminderSettings()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition">💾 Simpan Pengaturan Otomatis</button>
+<button onclick="sendBulkReminderNow()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded-xl text-xs transition">📢 Kirim Reminder ke Semua Belum Lunas (Sekarang)</button>
+</div>
+<div id="bulkReminderResult" class="text-[11px] space-y-1 hidden"></div>
+</div>
+<!-- Rekap Absensi -->
+<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
+<p class="text-xs font-bold text-white">📋 Kirim Rekap Absensi ke Grup</p>
+<div class="flex items-center gap-2 text-xs">
+<input type="date" id="recapTanggal" class="bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none">
+<button onclick="sendRecapAbsensiWA()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition">📤 Kirim Rekap</button>
+</div>
+</div>
+<!-- Log Notifikasi -->
+<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
+<div class="flex justify-between items-center">
+<p class="text-xs font-bold text-white">📜 Log Notifikasi Terkirim</p>
+<button onclick="loadWaNotificationLog()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg font-bold">🔄 Muat Ulang</button>
+</div>
+<div class="table-scroll-wrap overflow-x-auto max-h-56 overflow-y-auto rounded-lg border border-slate-800">
+<table class="w-full text-left text-[10px] text-slate-300">
+<thead class="bg-slate-950 uppercase font-bold text-slate-400 sticky top-0">
+<tr><th class="p-2">Tanggal</th><th class="p-2">Tujuan</th><th class="p-2">Jenis</th><th class="p-2">Status</th><th class="p-2">Mode</th></tr>
+</thead>
+<tbody id="waLogTableBody" class="divide-y divide-slate-800 bg-slate-900/50">
+<tr><td colspan="5" class="p-2 text-center text-slate-500">Klik "Muat Ulang" untuk melihat log.</td></tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -925,8 +1010,6 @@ let openKamusId = null;
 let editingKamusId = null;
 let sessionTimerInterval = null;
 let sessionRemainingSec = 1800;
-
-// ===== NATIVE SCANNER STATE =====
 let nativeStream = null;
 let nativeVideoEl = null;
 let nativeCanvasEl = null;
@@ -962,361 +1045,268 @@ const DEFAULT_KAMUS_HASH = [
 { id:"d24", term:"Virgin", def:"Sebutan bagi peserta yang baru pertama kali ikut lari di Hash Club." }
 ];
 let globalKamusHash = [];
-
-// ================================================================
-// ============= NATIVE QR SCANNER (iOS-FRIENDLY) =================
-// ================================================================
-
 function isIOSDevice() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+(navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
-
-// Cek apakah BarcodeDetector API tersedia (iOS 17.4+, Chrome Android, dll)
 function isBarcodeDetectorSupported() {
-  return 'BarcodeDetector' in window && typeof window.BarcodeDetector === 'function';
+return 'BarcodeDetector' in window && typeof window.BarcodeDetector === 'function';
 }
-
-// Inisialisasi BarcodeDetector
 async function initBarcodeDetector() {
-  if (!isBarcodeDetectorSupported()) return null;
-  try {
-    // Cek format yang didukung
-    if (typeof BarcodeDetector.getSupportedFormats === 'function') {
-      const formats = await BarcodeDetector.getSupportedFormats();
-      if (!formats.includes('qr_code')) {
-        console.warn('BarcodeDetector tidak support qr_code');
-        return null;
-      }
-    }
-    return new BarcodeDetector({ formats: ['qr_code'] });
-  } catch (e) {
-    console.warn('Gagal init BarcodeDetector:', e);
-    return null;
-  }
+if (!isBarcodeDetectorSupported()) return null;
+try {
+if (typeof BarcodeDetector.getSupportedFormats === 'function') {
+const formats = await BarcodeDetector.getSupportedFormats();
+if (!formats.includes('qr_code')) {
+console.warn('BarcodeDetector tidak support qr_code');
+return null;
 }
-
-// Stop native scanner dengan cleanup total
+}
+return new BarcodeDetector({ formats: ['qr_code'] });
+} catch (e) {
+console.warn('Gagal init BarcodeDetector:', e);
+return null;
+}
+}
 function stopNativeScanner() {
-  nativeScannerActive = false;
-  
-  if (nativeScanInterval) {
-    clearInterval(nativeScanInterval);
-    nativeScanInterval = null;
-  }
-  
-  if (nativeStream) {
-    nativeStream.getTracks().forEach(track => track.stop());
-    nativeStream = null;
-  }
-  
-  if (nativeVideoEl) {
-    nativeVideoEl.srcObject = null;
-    nativeVideoEl.pause();
-    nativeVideoEl = null;
-  }
-  
-  nativeCanvasEl = null;
-  nativeBarcodeDetector = null;
+nativeScannerActive = false;
+if (nativeScanInterval) {
+clearInterval(nativeScanInterval);
+nativeScanInterval = null;
 }
-
-// Setup kamera dengan getUserMedia langsung (bypass html5-qrcode)
+if (nativeStream) {
+nativeStream.getTracks().forEach(track => track.stop());
+nativeStream = null;
+}
+if (nativeVideoEl) {
+nativeVideoEl.srcObject = null;
+nativeVideoEl.pause();
+nativeVideoEl = null;
+}
+nativeCanvasEl = null;
+nativeBarcodeDetector = null;
+}
 async function setupNativeCamera(preferredDeviceId) {
-  const constraints = {
-    audio: false,
-    video: {
-      facingMode: { ideal: 'environment' },
-      width: { ideal: 1280, min: 640 },
-      height: { ideal: 720, min: 480 },
-      frameRate: { ideal: 30, max: 30 }
-    }
-  };
-  
-  // Jika user pilih kamera spesifik, override facingMode
-  if (preferredDeviceId) {
-    constraints.video = {
-      deviceId: { exact: preferredDeviceId },
-      width: { ideal: 1280, min: 640 },
-      height: { ideal: 720, min: 480 },
-      frameRate: { ideal: 30, max: 30 }
-    };
-  }
-  
-  // iOS: coba beberapa konfigurasi jika gagal
-  const attempts = [
-    constraints,
-    { audio: false, video: { facingMode: 'environment' } },
-    { audio: false, video: true }
-  ];
-  
-  let lastError = null;
-  for (const attempt of attempts) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia(attempt);
-      return stream;
-    } catch (err) {
-      lastError = err;
-      console.warn('getUserMedia gagal dengan constraint:', attempt, err);
-    }
-  }
-  throw lastError || new Error('Tidak ada konfigurasi kamera yang berhasil.');
+const constraints = {
+audio: false,
+video: {
+facingMode: { ideal: 'environment' },
+width: { ideal: 1280, min: 640 },
+height: { ideal: 720, min: 480 },
+frameRate: { ideal: 30, max: 30 }
 }
-
-// Scan frame dengan BarcodeDetector (native, cepat)
+};
+if (preferredDeviceId) {
+constraints.video = {
+deviceId: { exact: preferredDeviceId },
+width: { ideal: 1280, min: 640 },
+height: { ideal: 720, min: 480 },
+frameRate: { ideal: 30, max: 30 }
+};
+}
+const attempts = [
+constraints,
+{ audio: false, video: { facingMode: 'environment' } },
+{ audio: false, video: true }
+];
+let lastError = null;
+for (const attempt of attempts) {
+try {
+const stream = await navigator.mediaDevices.getUserMedia(attempt);
+return stream;
+} catch (err) {
+lastError = err;
+console.warn('getUserMedia gagal dengan constraint:', attempt, err);
+}
+}
+throw lastError || new Error('Tidak ada konfigurasi kamera yang berhasil.');
+}
 async function scanWithBarcodeDetector() {
-  if (!nativeBarcodeDetector || !nativeVideoEl || !nativeScannerActive) return;
-  if (nativeVideoEl.readyState !== nativeVideoEl.HAVE_ENOUGH_DATA) return;
-  
-  try {
-    const barcodes = await nativeBarcodeDetector.detect(nativeVideoEl);
-    if (barcodes && barcodes.length > 0) {
-      const qrData = barcodes[0].rawValue;
-      if (qrData && !isScanningLocked) {
-        isScanningLocked = true;
-        handleSuccessfulScan(qrData);
-        // Delay sebelum bisa scan lagi
-        setTimeout(() => { isScanningLocked = false; }, 3000);
-      }
-    }
-  } catch (e) {
-    // Silent ignore - akan coba frame berikutnya
-  }
+if (!nativeBarcodeDetector || !nativeVideoEl || !nativeScannerActive) return;
+if (nativeVideoEl.readyState !== nativeVideoEl.HAVE_ENOUGH_DATA) return;
+try {
+const barcodes = await nativeBarcodeDetector.detect(nativeVideoEl);
+if (barcodes && barcodes.length > 0) {
+const qrData = barcodes[0].rawValue;
+if (qrData && !isScanningLocked) {
+isScanningLocked = true;
+handleSuccessfulScan(qrData);
+setTimeout(() => { isScanningLocked = false; }, 3000);
 }
-
-// Scan frame dengan jsQR (fallback untuk browser lama)
+}
+} catch (e) {}
+}
 function scanWithJsQR() {
-  if (!nativeVideoEl || !nativeCanvasEl || !nativeScannerActive) return;
-  if (nativeVideoEl.readyState !== nativeVideoEl.HAVE_ENOUGH_DATA) return;
-  
-  const ctx = nativeCanvasEl.getContext('2d', { willReadFrequently: true });
-  if (!ctx) return;
-  
-  try {
-    // Resize canvas sesuai video (tapi batas max untuk performa)
-    const maxDim = 640;
-    let w = nativeVideoEl.videoWidth;
-    let h = nativeVideoEl.videoHeight;
-    if (w > maxDim || h > maxDim) {
-      const scale = maxDim / Math.max(w, h);
-      w = Math.round(w * scale);
-      h = Math.round(h * scale);
-    }
-    
-    if (nativeCanvasEl.width !== w) nativeCanvasEl.width = w;
-    if (nativeCanvasEl.height !== h) nativeCanvasEl.height = h;
-    
-    ctx.drawImage(nativeVideoEl, 0, 0, w, h);
-    const imageData = ctx.getImageData(0, 0, w, h);
-    
-    if (typeof jsQR !== 'undefined') {
-      const code = jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: 'dontInvert'
-      });
-      if (code && code.data && !isScanningLocked) {
-        isScanningLocked = true;
-        handleSuccessfulScan(code.data);
-        setTimeout(() => { isScanningLocked = false; }, 3000);
-      }
-    }
-  } catch (e) {
-    // Silent
-  }
+if (!nativeVideoEl || !nativeCanvasEl || !nativeScannerActive) return;
+if (nativeVideoEl.readyState !== nativeVideoEl.HAVE_ENOUGH_DATA) return;
+const ctx = nativeCanvasEl.getContext('2d', { willReadFrequently: true });
+if (!ctx) return;
+try {
+const maxDim = 640;
+let w = nativeVideoEl.videoWidth;
+let h = nativeVideoEl.videoHeight;
+if (w > maxDim || h > maxDim) {
+const scale = maxDim / Math.max(w, h);
+w = Math.round(w * scale);
+h = Math.round(h * scale);
 }
-
-// Handler: Scan foto dari galeri (fallback terakhir)
+if (nativeCanvasEl.width !== w) nativeCanvasEl.width = w;
+if (nativeCanvasEl.height !== h) nativeCanvasEl.height = h;
+ctx.drawImage(nativeVideoEl, 0, 0, w, h);
+const imageData = ctx.getImageData(0, 0, w, h);
+if (typeof jsQR !== 'undefined') {
+const code = jsQR(imageData.data, imageData.width, imageData.height, {
+inversionAttempts: 'dontInvert'
+});
+if (code && code.data && !isScanningLocked) {
+isScanningLocked = true;
+handleSuccessfulScan(code.data);
+setTimeout(() => { isScanningLocked = false; }, 3000);
+}
+}
+} catch (e) {}
+}
 function handleGalleryQrScan(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  
-  toast('🔍 Memproses foto dari galeri...', 'info', 3000);
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = new Image();
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      // Resize untuk performa
-      const maxDim = 1280;
-      let w = img.width, h = img.height;
-      if (w > maxDim || h > maxDim) {
-        const scale = maxDim / Math.max(w, h);
-        w = Math.round(w * scale);
-        h = Math.round(h * scale);
-      }
-      canvas.width = w;
-      canvas.height = h;
-      ctx.drawImage(img, 0, 0, w, h);
-      
-      // Coba BarcodeDetector dulu
-      const tryDecode = async () => {
-        // Method 1: BarcodeDetector
-        if (isBarcodeDetectorSupported()) {
-          try {
-            const detector = new BarcodeDetector({ formats: ['qr_code'] });
-            const barcodes = await detector.detect(canvas);
-            if (barcodes && barcodes.length > 0) {
-              handleSuccessfulScan(barcodes[0].rawValue);
-              return;
-            }
-          } catch (e) {}
-        }
-        
-        // Method 2: jsQR
-        if (typeof jsQR !== 'undefined') {
-          const imageData = ctx.getImageData(0, 0, w, h);
-          const code = jsQR(imageData.data, imageData.width, imageData.height, {
-            inversionAttempts: 'attemptBoth'
-          });
-          if (code && code.data) {
-            handleSuccessfulScan(code.data);
-            return;
-          }
-        }
-        
-        toast('❌ QR Code tidak terdeteksi. Pastikan foto jelas dan QR terlihat penuh.', 'error', 6000);
-      };
-      
-      tryDecode();
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-  
-  // Reset input agar bisa upload foto yang sama lagi
-  event.target.value = '';
+const file = event.target.files[0];
+if (!file) return;
+toast('🔍 Memproses foto dari galeri...', 'info', 3000);
+const reader = new FileReader();
+reader.onload = function(e) {
+const img = new Image();
+img.onload = function() {
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+const maxDim = 1280;
+let w = img.width, h = img.height;
+if (w > maxDim || h > maxDim) {
+const scale = maxDim / Math.max(w, h);
+w = Math.round(w * scale);
+h = Math.round(h * scale);
 }
-
-// START NATIVE SCANNER - Fungsi utama yang dipanggil tombol "Nyalakan Kamera"
+canvas.width = w;
+canvas.height = h;
+ctx.drawImage(img, 0, 0, w, h);
+const tryDecode = async () => {
+if (isBarcodeDetectorSupported()) {
+try {
+const detector = new BarcodeDetector({ formats: ['qr_code'] });
+const barcodes = await detector.detect(canvas);
+if (barcodes && barcodes.length > 0) {
+handleSuccessfulScan(barcodes[0].rawValue);
+return;
+}
+} catch (e) {}
+}
+if (typeof jsQR !== 'undefined') {
+const imageData = ctx.getImageData(0, 0, w, h);
+const code = jsQR(imageData.data, imageData.width, imageData.height, {
+inversionAttempts: 'attemptBoth'
+});
+if (code && code.data) {
+handleSuccessfulScan(code.data);
+return;
+}
+}
+toast('❌ QR Code tidak terdeteksi. Pastikan foto jelas dan QR terlihat penuh.', 'error', 6000);
+};
+tryDecode();
+};
+img.src = e.target.result;
+};
+reader.readAsDataURL(file);
+event.target.value = '';
+}
 async function startNativeQrScanner() {
-  if (nativeScannerActive) {
-    toast('Scanner sudah aktif.', 'info');
-    return;
-  }
-  
-  if (!window.isSecureContext) {
-    toast('Kamera butuh HTTPS. Buka via URL https.', 'error', 8000);
-    return;
-  }
-  
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    toast('Browser tidak support kamera.', 'error', 8000);
-    return;
-  }
-  
-  isScannerStarting = true;
-  isScanningLocked = false;
-  
-  const reader = document.getElementById('reader');
-  if (reader) {
-    reader.innerHTML = '<p class="text-xs text-slate-400 p-3 flex items-center justify-center gap-2"><span class="inline-block w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>Menyiapkan kamera...</p>';
-  }
-  
-  try {
-    // Init BarcodeDetector jika tersedia
-    nativeBarcodeDetector = await initBarcodeDetector();
-    const usingBarcodeDetector = !!nativeBarcodeDetector;
-    
-    // Dapatkan kamera yang dipilih
-    const selectedCameraId = document.getElementById('scannerCameraSelect') ? 
-                             document.getElementById('scannerCameraSelect').value : '';
-    
-    // Request kamera
-    nativeStream = await setupNativeCamera(selectedCameraId);
-    
-    // Buat video element
-    nativeVideoEl = document.createElement('video');
-    nativeVideoEl.setAttribute('autoplay', '');
-    nativeVideoEl.setAttribute('muted', '');
-    nativeVideoEl.setAttribute('playsinline', '');
-    nativeVideoEl.setAttribute('webkit-playsinline', '');
-    nativeVideoEl.muted = true;
-    nativeVideoEl.playsInline = true;
-    nativeVideoEl.style.width = '100%';
-    nativeVideoEl.style.height = 'auto';
-    nativeVideoEl.style.minHeight = '260px';
-    nativeVideoEl.style.maxHeight = '400px';
-    nativeVideoEl.style.objectFit = 'cover';
-    nativeVideoEl.style.borderRadius = '0.75rem';
-    nativeVideoEl.style.background = '#000';
-    
-    // Buat canvas untuk jsQR fallback
-    nativeCanvasEl = document.createElement('canvas');
-    nativeCanvasEl.style.display = 'none';
-    
-    // Attach stream ke video
-    nativeVideoEl.srcObject = nativeStream;
-    
-    // Tunggu metadata loaded
-    await new Promise((resolve, reject) => {
-      nativeVideoEl.onloadedmetadata = () => {
-        nativeVideoEl.play()
-          .then(resolve)
-          .catch(err => {
-            console.warn('Video play gagal, coba lagi...', err);
-            // Retry setelah delay
-            setTimeout(() => {
-              nativeVideoEl.play().then(resolve).catch(reject);
-            }, 100);
-          });
-      };
-      nativeVideoEl.onerror = reject;
-      setTimeout(resolve, 3000); // Timeout 3 detik
-    });
-    
-    // Render ke #reader
-    if (reader) {
-      reader.innerHTML = '';
-      reader.appendChild(nativeVideoEl);
-      reader.appendChild(nativeCanvasEl);
-      
-      // Overlay scanner
-      const overlay = document.createElement('div');
-      overlay.className = 'scan-overlay';
-      const scanLine = document.createElement('div');
-      scanLine.className = 'scan-line';
-      overlay.appendChild(scanLine);
-      reader.appendChild(overlay);
-      
-      // Status badge
-      const statusBadge = document.createElement('div');
-      statusBadge.className = 'scanner-status-badge';
-      statusBadge.innerText = usingBarcodeDetector ? 'NATIVE SCAN' : 'JSQR SCAN';
-      reader.appendChild(statusBadge);
-    }
-    
-    nativeScannerActive = true;
-    
-    // Mulai loop scan
-    const scanFn = usingBarcodeDetector ? scanWithBarcodeDetector : scanWithJsQR;
-    // Scan setiap 200ms (5 fps) - cukup cepat, tidak boros CPU
-    nativeScanInterval = setInterval(scanFn, 200);
-    
-    toast('✅ Kamera aktif! Arahkan ke QR Code.', 'success', 4000);
-    loadCameraDevices(false);
-    
-  } catch (err) {
-    console.error('Gagal start scanner:', err);
-    const msg = explainCameraError(err);
-    
-    if (reader) {
-      reader.innerHTML = '<div class="p-4 text-center space-y-2">' +
-        '<p class="text-xs text-rose-400 font-semibold">' + msg + '</p>' +
-        '<p class="text-[10px] text-slate-500">Gunakan tombol "Scan dari Foto" di bawah sebagai alternatif.</p>' +
-        '</div>';
-    }
-    toast(msg, 'error', 8000);
-    stopNativeScanner();
-  } finally {
-    isScannerStarting = false;
-  }
+if (nativeScannerActive) {
+toast('Scanner sudah aktif.', 'info');
+return;
 }
-
-// ================================================================
-// ============= END NATIVE QR SCANNER =============================
-// ================================================================
-
+if (!window.isSecureContext) {
+toast('Kamera butuh HTTPS. Buka via URL https.', 'error', 8000);
+return;
+}
+if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+toast('Browser tidak support kamera.', 'error', 8000);
+return;
+}
+isScannerStarting = true;
+isScanningLocked = false;
+const reader = document.getElementById('reader');
+if (reader) {
+reader.innerHTML = '<p class="text-xs text-slate-400 p-3 flex items-center justify-center gap-2"><span class="inline-block w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>Menyiapkan kamera...</p>';
+}
+try {
+nativeBarcodeDetector = await initBarcodeDetector();
+const usingBarcodeDetector = !!nativeBarcodeDetector;
+const selectedCameraId = document.getElementById('scannerCameraSelect') ?
+document.getElementById('scannerCameraSelect').value : '';
+nativeStream = await setupNativeCamera(selectedCameraId);
+nativeVideoEl = document.createElement('video');
+nativeVideoEl.setAttribute('autoplay', '');
+nativeVideoEl.setAttribute('muted', '');
+nativeVideoEl.setAttribute('playsinline', '');
+nativeVideoEl.setAttribute('webkit-playsinline', '');
+nativeVideoEl.muted = true;
+nativeVideoEl.playsInline = true;
+nativeVideoEl.style.width = '100%';
+nativeVideoEl.style.height = 'auto';
+nativeVideoEl.style.minHeight = '260px';
+nativeVideoEl.style.maxHeight = '400px';
+nativeVideoEl.style.objectFit = 'cover';
+nativeVideoEl.style.borderRadius = '0.75rem';
+nativeVideoEl.style.background = '#000';
+nativeCanvasEl = document.createElement('canvas');
+nativeCanvasEl.style.display = 'none';
+nativeVideoEl.srcObject = nativeStream;
+await new Promise((resolve, reject) => {
+nativeVideoEl.onloadedmetadata = () => {
+nativeVideoEl.play()
+.then(resolve)
+.catch(err => {
+console.warn('Video play gagal, coba lagi...', err);
+setTimeout(() => {
+nativeVideoEl.play().then(resolve).catch(reject);
+}, 100);
+});
+};
+nativeVideoEl.onerror = reject;
+setTimeout(resolve, 3000);
+});
+if (reader) {
+reader.innerHTML = '';
+reader.appendChild(nativeVideoEl);
+reader.appendChild(nativeCanvasEl);
+const overlay = document.createElement('div');
+overlay.className = 'scan-overlay';
+const scanLine = document.createElement('div');
+scanLine.className = 'scan-line';
+overlay.appendChild(scanLine);
+reader.appendChild(overlay);
+const statusBadge = document.createElement('div');
+statusBadge.className = 'scanner-status-badge';
+statusBadge.innerText = usingBarcodeDetector ? 'NATIVE SCAN' : 'JSQR SCAN';
+reader.appendChild(statusBadge);
+}
+nativeScannerActive = true;
+const scanFn = usingBarcodeDetector ? scanWithBarcodeDetector : scanWithJsQR;
+nativeScanInterval = setInterval(scanFn, 200);
+toast('✅ Kamera aktif! Arahkan ke QR Code.', 'success', 4000);
+loadCameraDevices(false);
+} catch (err) {
+console.error('Gagal start scanner:', err);
+const msg = explainCameraError(err);
+if (reader) {
+reader.innerHTML = '<div class="p-4 text-center space-y-2">' +
+'<p class="text-xs text-rose-400 font-semibold">' + msg + '</p>' +
+'<p class="text-[10px] text-slate-500">Gunakan tombol "Scan dari Foto" di bawah sebagai alternatif.</p>' +
+'</div>';
+}
+toast(msg, 'error', 8000);
+stopNativeScanner();
+} finally {
+isScannerStarting = false;
+}
+}
 function switchAdminTab(tabName) {
 document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
 document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -1623,10 +1613,12 @@ if (kasReportMonthEl) kasReportMonthEl.value = today.slice(0, 7);
 const currentMonthIdx = new Date().getMonth();
 const qrisStartMonthEl = document.getElementById('qrisStartMonth');
 if (qrisStartMonthEl) qrisStartMonthEl.value = listBulan[currentMonthIdx];
+const recapTanggalEl = document.getElementById('recapTanggal');
+if (recapTanggalEl) recapTanggalEl.value = today;
 });
 window.addEventListener('beforeunload', function() {
-  stopNativeScanner();
-  if (html5QrCode) { try { html5QrCode.stop(); } catch (e) {} }
+stopNativeScanner();
+if (html5QrCode) { try { html5QrCode.stop(); } catch (e) {} }
 });
 function loadSettings() {
 fetch(GOOGLE_APP_URL + '?action=getSettings')
@@ -1732,7 +1724,7 @@ container.innerHTML = belumLunas.map(function(m) {
 return '<div class="flex justify-between items-center bg-slate-950 border border-slate-800 rounded-xl p-2.5">' +
 '<div><p class="font-bold text-white">' + escapeHtml(m.hashname || '-') + '</p>' +
 '<p class="text-[10px] text-slate-500">' + escapeHtml(m.phone || 'No. WA tidak ada') + '</p></div>' +
-'<button onclick="sendReminderWA(\'' + escapeHtml(m.phone) + '\',\'' + escapeHtml((m.hashname || '-').replace(/'/g, '')) + '\')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg">💬 WA</button></div>';
+'<button onclick="sendReminderToMember(\'' + escapeHtml(m.id) + '\')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg">📲 Reminder</button></div>';
 }).join('');
 }
 function sendReminderWA(phone, nama) {
@@ -2008,68 +2000,57 @@ callApi({ action: "approvePaymentClaim", id: id, tanggal: getTodayStr(), tipe: "
 .then(function() { toast('Pembayaran ' + member + ' disetujui & dicatat ke kas.', "success"); loadPendingPayments(); loadKasData(); fetchDropdownMembers(); })
 .catch(function() { toast("Gagal menyetujui pembayaran.", "error"); });
 }
-
-// Load daftar kamera untuk dropdown
 function loadCameraDevices(showError) {
-  const select = document.getElementById('scannerCameraSelect');
-  if (!select || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
-  
-  navigator.mediaDevices.enumerateDevices()
-    .then(function(devices) {
-      const cameras = devices.filter(d => d.kind === 'videoinput');
-      const currentValue = select.value;
-      select.innerHTML = '<option value="">Otomatis (default belakang HP)</option>';
-      
-      cameras.forEach(function(d, idx) {
-        const opt = document.createElement('option');
-        opt.value = d.deviceId;
-        const label = d.label || ('Kamera ' + (idx + 1));
-        // Tandai kamera belakang
-        if (/back|rear|environment|belakang/i.test(label)) {
-          opt.innerText = '📷 ' + label + ' (Belakang)';
-        } else if (/front|depan|user/i.test(label)) {
-          opt.innerText = '🤳 ' + label + ' (Depan)';
-        } else {
-          opt.innerText = '📹 ' + label;
-        }
-        select.appendChild(opt);
-      });
-      
-      if (cameras.some(d => d.deviceId === currentValue)) {
-        select.value = currentValue;
-      }
-    })
-    .catch(function(err) {
-      if (showError) toast("Gagal mendeteksi kamera: " + err.message, "warn", 6000);
-    });
+const select = document.getElementById('scannerCameraSelect');
+if (!select || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+navigator.mediaDevices.enumerateDevices()
+.then(function(devices) {
+const cameras = devices.filter(d => d.kind === 'videoinput');
+const currentValue = select.value;
+select.innerHTML = '<option value="">Otomatis (default belakang HP)</option>';
+cameras.forEach(function(d, idx) {
+const opt = document.createElement('option');
+opt.value = d.deviceId;
+const label = d.label || ('Kamera ' + (idx + 1));
+if (/back|rear|environment|belakang/i.test(label)) {
+opt.innerText = '📷 ' + label + ' (Belakang)';
+} else if (/front|depan|user/i.test(label)) {
+opt.innerText = '🤳 ' + label + ' (Depan)';
+} else {
+opt.innerText = '📹 ' + label;
 }
-
+select.appendChild(opt);
+});
+if (cameras.some(d => d.deviceId === currentValue)) {
+select.value = currentValue;
+}
+})
+.catch(function(err) {
+if (showError) toast("Gagal mendeteksi kamera: " + err.message, "warn", 6000);
+});
+}
 function stopQrScanner(silent) {
-  // Stop native scanner dulu
-  stopNativeScanner();
-  
-  // Stop html5-qrcode jika aktif
-  if (html5QrCode) {
-    html5QrCode.stop().catch(function() {}).finally(function() {
-      try { if (html5QrCode && html5QrCode.clear) html5QrCode.clear(); } catch (e) {}
-      html5QrCode = null;
-      if (!silent) {
-        const box = document.getElementById('scanStatusBox');
-        if (box) box.classList.add('hidden');
-        toast("Kamera scanner dimatikan.", "info");
-        const reader = document.getElementById('reader');
-        if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Kamera dimatikan. Klik tombol untuk memulai lagi.</p>';
-      }
-    });
-  } else if (!silent) {
-    const box = document.getElementById('scanStatusBox');
-    if (box) box.classList.add('hidden');
-    toast("Kamera scanner dimatikan.", "info");
-    const reader = document.getElementById('reader');
-    if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Kamera dimatikan. Klik tombol untuk memulai lagi.</p>';
-  }
+stopNativeScanner();
+if (html5QrCode) {
+html5QrCode.stop().catch(function() {}).finally(function() {
+try { if (html5QrCode && html5QrCode.clear) html5QrCode.clear(); } catch (e) {}
+html5QrCode = null;
+if (!silent) {
+const box = document.getElementById('scanStatusBox');
+if (box) box.classList.add('hidden');
+toast("Kamera scanner dimatikan.", "info");
+const reader = document.getElementById('reader');
+if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Kamera dimatikan. Klik tombol untuk memulai lagi.</p>';
 }
-
+});
+} else if (!silent) {
+const box = document.getElementById('scanStatusBox');
+if (box) box.classList.add('hidden');
+toast("Kamera scanner dimatikan.", "info");
+const reader = document.getElementById('reader');
+if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Kamera dimatikan. Klik tombol untuk memulai lagi.</p>';
+}
+}
 function explainCameraError(err) {
 const name = err && err.name ? err.name : '';
 const raw = err && err.message ? err.message : String(err || '');
@@ -2087,19 +2068,14 @@ return 'Tidak ditemukan kamera pada perangkat ini.';
 }
 return 'Gagal membuka kamera (' + (name || 'Error') + (raw ? ': ' + raw : '') + ').';
 }
-
-// Fungsi startQrScanner - sekarang menggunakan NATIVE scanner
 function startQrScanner() {
-  if (isScannerStarting) return;
-  if (nativeScannerActive) {
-    toast('Scanner sudah aktif.', 'info');
-    return;
-  }
-  
-  // Langsung gunakan native scanner (lebih reliable di iOS)
-  startNativeQrScanner();
+if (isScannerStarting) return;
+if (nativeScannerActive) {
+toast('Scanner sudah aktif.', 'info');
+return;
 }
-
+startNativeQrScanner();
+}
 function handleSuccessfulScan(qrCodeMessage) {
 const statusBox = document.getElementById('scanStatusBox');
 const statusText = document.getElementById('scanStatusText');
@@ -2550,6 +2526,7 @@ document.getElementById('adminBadgeHeader').classList.remove('hidden');
 toast("Mode Admin Aktif! Sesi berlaku " + Math.round((res.expiresIn || 1800) / 60) + " menit.", "success");
 startSessionTimer(res.expiresIn || 1800);
 loadPendingPayments(); loadGallery(); loadCameraDevices(false);
+loadWaSettings();
 const sejarahBtn = document.getElementById('sejarahEditToggleBtn');
 if (sejarahBtn) sejarahBtn.classList.remove('hidden');
 renderKamusHash();
@@ -2594,6 +2571,166 @@ function openEventTerbaruModal() { document.getElementById('eventTerbaruModal').
 function closeEventTerbaruModal() { document.getElementById('eventTerbaruModal').classList.add('hidden'); }
 function openPrestasiModal() { document.getElementById('prestasiModal').classList.remove('hidden'); }
 function closePrestasiModal() { document.getElementById('prestasiModal').classList.add('hidden'); }
+function loadWaSettings() {
+fetch(GOOGLE_APP_URL + '?action=getWaSettings')
+.then(function(res) { return res.json(); })
+.then(function(res) {
+if (res.status !== "success" || !res.data) return;
+var s = res.data;
+var providerEl = document.getElementById('waGatewayProvider');
+var apiKeyEl = document.getElementById('waGatewayApiKey');
+var groupEl = document.getElementById('waGroupNumber');
+var templateEl = document.getElementById('waTemplateReminder');
+var autoEl = document.getElementById('waAutoReminderEnabled');
+var dateEl = document.getElementById('waReminderDate');
+if (providerEl) providerEl.value = s.waGatewayProvider || '';
+if (apiKeyEl) apiKeyEl.value = s.waGatewayApiKey || '';
+if (groupEl) groupEl.value = s.waGroupNumber || '';
+if (templateEl) templateEl.value = s.waTemplateReminder || '';
+if (autoEl) autoEl.value = s.waAutoReminderEnabled || 'false';
+if (dateEl) {
+dateEl.innerHTML = '';
+for (var d = 1; d <= 28; d++) {
+var opt = document.createElement('option');
+opt.value = d;
+opt.innerText = 'Tanggal ' + d;
+dateEl.appendChild(opt);
+}
+dateEl.value = s.waReminderDate || '1';
+}
+}).catch(function() {});
+}
+function saveWaGatewaySettings() {
+var provider = document.getElementById('waGatewayProvider').value;
+var apiKey = document.getElementById('waGatewayApiKey').value.trim();
+var group = document.getElementById('waGroupNumber').value.trim();
+var saves = [
+callApi({ action: "saveSetting", key: "waGatewayProvider", value: provider }),
+callApi({ action: "saveSetting", key: "waGatewayApiKey", value: apiKey }),
+callApi({ action: "saveSetting", key: "waGroupNumber", value: group })
+];
+Promise.all(saves)
+.then(function() { toast('✅ Konfigurasi gateway WA tersimpan.', "success"); })
+.catch(function() { toast('Gagal menyimpan konfigurasi.', "error"); });
+}
+function saveWaTemplate() {
+var template = document.getElementById('waTemplateReminder').value;
+callApi({ action: "saveSetting", key: "waTemplateReminder", value: template })
+.then(function() { toast('✅ Template pesan reminder tersimpan.', "success"); })
+.catch(function() { toast('Gagal menyimpan template.', "error"); });
+}
+function saveAutoReminderSettings() {
+var enabled = document.getElementById('waAutoReminderEnabled').value;
+var date = document.getElementById('waReminderDate').value;
+Promise.all([
+callApi({ action: "saveSetting", key: "waAutoReminderEnabled", value: enabled }),
+callApi({ action: "saveSetting", key: "waReminderDate", value: date })
+]).then(function() {
+if (enabled === 'true') {
+return callApi({ action: "setupAutoReminderTrigger" })
+.then(function(res) { toast('✅ Reminder otomatis AKTIF. ' + (res.message || ''), "success"); });
+} else {
+return callApi({ action: "deleteAutoReminderTrigger" })
+.then(function(res) { toast('Reminder otomatis dinonaktifkan.', "info"); });
+}
+}).catch(function() { toast('Gagal menyimpan pengaturan reminder.', "error"); });
+}
+function testWaGatewayUI() {
+toast('🧪 Menyiapkan link test...', 'info', 2000);
+callApi({ action: "testWaGateway" })
+.then(function(res) {
+if (res.status === 'success') {
+toast('✅ ' + res.message, "success", 5000);
+if (res.link) window.open(res.link, '_blank');
+} else {
+toast('❌ ' + res.message, "error", 6000);
+}
+})
+.catch(function() { toast('Gagal test gateway.', "error"); });
+}
+function sendBulkReminderNow() {
+if (!confirm('Kirim reminder iuran ke SEMUA member aktif yang Belum Lunas? (Mode wa.me — link akan terbuka satu per satu)')) return;
+var resultBox = document.getElementById('bulkReminderResult');
+resultBox.classList.remove('hidden');
+resultBox.innerHTML = '<p class="text-slate-400">⏳ Menyiapkan link reminder... mohon tunggu.</p>';
+callApi({ action: "sendBulkReminderIuran" })
+.then(function(res) {
+if (res.status !== 'success') {
+resultBox.innerHTML = '<p class="text-rose-400">❌ ' + (res.message || 'Gagal.') + '</p>';
+return;
+}
+var html = '<p class="text-emerald-400 font-bold">✅ ' + res.message + '</p>';
+if (res.links && res.links.length > 0) {
+html += '<p class="text-slate-300 mt-2">Klik link di bawah untuk membuka WhatsApp masing-masing member:</p>';
+html += '<div class="space-y-1 mt-1 max-h-48 overflow-y-auto">';
+res.links.forEach(function(l) {
+html += '<a href="' + l.link + '" target="_blank" class="block bg-slate-800 hover:bg-slate-700 text-emerald-300 text-[11px] px-3 py-2 rounded-lg border border-slate-700">💬 ' + escapeHtml(l.nama) + ' (' + escapeHtml(l.hashname) + ')</a>';
+});
+html += '</div>';
+}
+resultBox.innerHTML = html;
+loadWaNotificationLog();
+})
+.catch(function() { resultBox.innerHTML = '<p class="text-rose-400">❌ Gagal mengirim reminder.</p>'; });
+}
+function sendRecapAbsensiWA() {
+var tanggalEl = document.getElementById('recapTanggal');
+var tanggal = tanggalEl.value || getTodayStr();
+var group = document.getElementById('waGroupNumber').value.trim();
+if (!group) { toast('⚠️ Isi nomor WA grup terlebih dahulu di konfigurasi di atas.', 'warn', 5000); return; }
+toast('📤 Menyiapkan link rekap absensi...', 'info', 2000);
+callApi({ action: "sendAttendanceRecapWA", tanggal: tanggal, groupNumber: group })
+.then(function(res) {
+if (res.status === 'manual') {
+toast('🔗 Link rekap siap! Klik untuk buka WhatsApp grup.', "info", 5000);
+window.open(res.link, '_blank');
+} else if (res.status === 'success') {
+toast('✅ ' + res.message, "success", 5000);
+} else {
+toast('❌ ' + (res.message || 'Gagal mengirim rekap.'), "error", 5000);
+}
+loadWaNotificationLog();
+})
+.catch(function() { toast('Gagal mengirim rekap.', "error"); });
+}
+function sendReminderToMember(memberId) {
+callApi({ action: "sendReminderIuran", id: memberId })
+.then(function(res) {
+if (res.status === 'manual') {
+toast('🔗 Membuka WhatsApp untuk ' + (res.nama || 'member') + '...', "info", 4000);
+window.open(res.link, '_blank');
+} else if (res.status === 'success') {
+toast('✅ ' + res.message, "success", 4000);
+} else {
+toast('❌ ' + (res.message || 'Gagal mengirim reminder.'), "error", 4000);
+}
+loadWaNotificationLog();
+})
+.catch(function() { toast('Gagal mengirim reminder.', "error"); });
+}
+function loadWaNotificationLog() {
+var tbody = document.getElementById('waLogTableBody');
+if (!tbody) return;
+tbody.innerHTML = '<tr><td colspan="5" class="p-2 text-center text-slate-500">Memuat log...</td></tr>';
+fetch(GOOGLE_APP_URL + '?action=getWaNotificationLog')
+.then(function(res) { return res.json(); })
+.then(function(res) {
+if (res.status !== 'success' || !res.data || res.data.length === 0) {
+tbody.innerHTML = '<tr><td colspan="5" class="p-2 text-center text-slate-500">Belum ada log notifikasi.</td></tr>';
+return;
+}
+tbody.innerHTML = res.data.slice(0, 50).map(function(l) {
+var statusColor = l.status === 'success' ? 'text-emerald-400' : (l.status === 'manual' ? 'text-amber-400' : 'text-rose-400');
+return '<tr class="hover:bg-slate-800/40">' +
+'<td class="p-2">' + escapeHtml(l.tanggal) + ' ' + escapeHtml(l.waktu) + '</td>' +
+'<td class="p-2">' + escapeHtml(l.targetName || l.phone) + '</td>' +
+'<td class="p-2">' + escapeHtml(l.messageType) + '</td>' +
+'<td class="p-2 ' + statusColor + ' font-bold">' + escapeHtml(l.status) + '</td>' +
+'<td class="p-2 text-slate-400">' + escapeHtml(l.mode || '-') + '</td></tr>';
+}).join('');
+})
+.catch(function() { tbody.innerHTML = '<tr><td colspan="5" class="p-2 text-center text-rose-400">Gagal memuat log.</td></tr>'; });
+}
 </script>
 </body>
 </html>

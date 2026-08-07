@@ -1821,12 +1821,12 @@ function initScannerInstance() {
 const reader = document.getElementById('reader');
 if (reader) reader.innerHTML = '<p class="text-xs text-slate-500 p-3">Menyiapkan kamera...</p>';
 
-setTimeout(function() {
 try { html5QrCode = new Html5Qrcode("reader"); } catch (err) {
 if (reader) reader.innerHTML = '<p class="text-xs text-rose-400 p-3">Gagal membuat instance scanner.</p>';
 toast("Gagal membuat instance scanner.", "error", 5000); isScannerStarting = false; return;
 }
-const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const config = isIOSDevice ? { fps: 10 } : { fps: 10, qrbox: { width: 220, height: 220 } };
 const onScanSuccess = function(qrCodeMessage) { if (!isScanningLocked) { isScanningLocked = true; handleSuccessfulScan(qrCodeMessage); } };
 const selectedCameraId = document.getElementById('scannerCameraSelect') ? document.getElementById('scannerCameraSelect').value : '';
 startCameraWithFallback(selectedCameraId, config, onScanSuccess).then(function() {
@@ -1839,7 +1839,6 @@ toast(msg, "error", 8000);
 try { if (html5QrCode) html5QrCode.clear(); } catch (e) {}
 html5QrCode = null;
 }).finally(function() { isScannerStarting = false; });
-}, 500);
 }
 
 function handleSuccessfulScan(qrCodeMessage) {

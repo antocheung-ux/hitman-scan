@@ -70,12 +70,12 @@ h1,h2,h3,h4,.font-display{ font-family:'Rajdhani',sans-serif; }
 @media (min-width:640px){ .show-sm-block{ display:block; } }
 .mobile-nav-strip{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
 @media (min-width:1024px){ .mobile-nav-strip{ display:none; } }
-#reader video{ width: 100% !important; height: auto !important; min-height: 220px !important; max-height: 400px; object-fit: cover; border-radius: 0.75rem; display: block !important; background: #000; }
-#reader__scan_region{ min-height: 220px; display: flex; align-items: center; justify-content: center; }
-#reader__scan_region video{ width: 100% !important; height: auto !important; min-height: 220px !important; }
+#reader video{ width: 100% !important; min-height: 240px !important; height: auto !important; max-height: 400px; object-fit: cover; border-radius: 0.75rem; display: block !important; background: #000; }
 #reader img{ max-width: 100%; height: auto; }
 #reader__dashboard_section{ display: block !important; }
 #reader__dashboard_section_csr button{ background: #047857 !important; color: white !important; border-radius: 0.5rem !important; padding: 0.5rem 1rem !important; font-weight: bold !important; }
+#reader__scan_region{ min-height: 240px; display: flex; align-items: center; justify-content: center; background: #0f172a; border-radius: 0.75rem; }
+#reader__scan_region video{ width: 100% !important; min-height: 240px !important; height: auto !important; max-height: 400px; object-fit: cover; }
 ::-webkit-scrollbar{ width:9px; height:9px; }
 ::-webkit-scrollbar-track{ background:#031f17; }
 ::-webkit-scrollbar-thumb{ background:linear-gradient(#065f46,#047857); border-radius:8px; }
@@ -171,6 +171,7 @@ background:linear-gradient(to left, rgba(15,23,42,.85), transparent); pointer-ev
 .sos-btn{ width:48px; height:48px; font-size:8px; }
 .sos-btn .sos-icon{ font-size:16px; }
 @media (min-width:768px){ .sos-btn{ width:64px; height:64px; font-size:10px; } .sos-btn .sos-icon{ font-size:20px; } }
+.ios-tap-hint{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.7); color:white; padding:1rem 1.5rem; border-radius:1rem; font-size:0.75rem; font-weight:bold; text-align:center; z-index:10; pointer-events:none; }
 </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-body">
@@ -183,7 +184,6 @@ background:linear-gradient(to left, rgba(15,23,42,.85), transparent); pointer-ev
 </div>
 <div id="adminBadgeHeader" class="hidden">
 <span class="bg-amber-500/20 text-brand-gold border border-brand-gold/40 text-[10px] font-bold px-2.5 py-1 rounded-full">ADMIN</span>
-</div>
 </div>
 </div>
 </div>
@@ -1382,7 +1382,7 @@ el.innerHTML =
 '<div class="bg-emerald-950/60 border border-emerald-800 rounded-2xl p-3"><p class="text-xl font-black text-emerald-400">' + aktif + '</p><p class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">🟢 Aktif</p></div>' +
 '<div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-3"><p class="text-xl font-black text-slate-300">' + nonAktif + '</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">⚪ Non Aktif</p></div>' +
 '<div class="bg-sky-950/60 border border-sky-800 rounded-2xl p-3"><p class="text-xl font-black text-sky-400">' + lunas + '</p><p class="text-[10px] font-bold text-sky-300 uppercase tracking-wider">✅ Lunas</p></div>' +
-'<div class="bg-rose-950/60 border border-rose-800 rounded-2xl p-3"><p class="text-xl font-black text-rose-400">' + belumLunas + '</p><p class="text-[10px] font-bold text-rose-400 uppercase tracking-wider">❌ Belum</p></div>';
+'<div class="bg-rose-950/60 border border-rose-800 rounded-2xl p-3"><p class="text-xl font-black text-rose-400">' + belumLunas + '</p><p class="text-[10px] font-bold text-rose-300 uppercase tracking-wider">❌ Belum</p></div>';
 }
 function renderMembersTable() {
 const tbody = document.getElementById('databaseTableBody');
@@ -1721,21 +1721,6 @@ try { html5QrCode = new Html5Qrcode("reader"); } catch (err) {
 if (reader) reader.innerHTML = '<p class="text-xs text-rose-400 p-3">Gagal membuat instance scanner.</p>';
 toast("Gagal membuat instance scanner.", "error", 5000); isScannerStarting = false; return;
 }
-/* === iOS FIX: tap pada area reader untuk paksa play video === */
-var readerEl = document.getElementById('reader');
-if (readerEl) {
-readerEl.addEventListener('click', function iosTapPlay() {
-var v = readerEl.querySelector('video');
-if (v && v.paused) {
-v.muted = true;
-v.playsInline = true;
-v.setAttribute('playsinline', 'true');
-v.setAttribute('webkit-playsinline', 'true');
-v.play().catch(function(){});
-}
-});
-}
-/* === END iOS FIX tap === */
 const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const config = isIOSDevice ? { fps: 10 } : { fps: 10, qrbox: { width: 220, height: 220 } };
 const onScanSuccess = function(qrCodeMessage) { if (!isScanningLocked) { isScanningLocked = true; handleSuccessfulScan(qrCodeMessage); } };
@@ -1743,28 +1728,41 @@ const selectedCameraId = document.getElementById('scannerCameraSelect') ? docume
 startCameraWithFallback(selectedCameraId, config, onScanSuccess).then(function() {
 toast("Kamera scanner aktif.", "success");
 loadCameraDevices(false);
-/* === iOS FIX: paksa video play inline setelah kamera start === */
+// ===== iOS FIX: Force video play dan atribut yang dibutuhkan iOS =====
 setTimeout(function() {
 var videoEl = document.querySelector('#reader video');
 if (videoEl) {
+// Set atribut yang wajib untuk iOS
 videoEl.setAttribute('playsinline', 'true');
 videoEl.setAttribute('webkit-playsinline', 'true');
 videoEl.setAttribute('muted', 'true');
 videoEl.setAttribute('autoplay', 'true');
 videoEl.muted = true;
 videoEl.playsInline = true;
+// Paksa play jika masih paused
 if (videoEl.paused) {
-videoEl.play().then(function() {
-console.log('iOS video play OK');
+var playPromise = videoEl.play();
+if (playPromise !== undefined) {
+playPromise.then(function() {
+console.log('iOS video play berhasil');
 }).catch(function(err) {
-console.warn('iOS video play gagal:', err);
+console.warn('iOS video play gagal, perlu tap:', err);
+// Tampilkan hint untuk tap
+var hint = document.createElement('div');
+hint.className = 'ios-tap-hint';
+hint.innerHTML = '📷 Ketuk area kamera<br>untuk memulai video';
+reader.appendChild(hint);
+setTimeout(function() { if (hint.parentNode) hint.remove(); }, 4000);
 });
 }
+}
+// Listener untuk metadata loaded
 videoEl.addEventListener('loadedmetadata', function() {
 if (videoEl.videoHeight === 0) {
 videoEl.style.minHeight = '240px';
 }
 });
+// Fallback: jika 2 detik masih hitam, coba play ulang
 setTimeout(function() {
 if (videoEl.paused || videoEl.readyState < 2) {
 videoEl.play().catch(function(){});
@@ -1772,7 +1770,19 @@ videoEl.play().catch(function(){});
 }, 2000);
 }
 }, 300);
-/* === END iOS FIX video play === */
+// ===== END iOS FIX =====
+// Tap-to-play untuk iOS (iOS butuh user gesture untuk play video)
+reader.addEventListener('click', function() {
+var v = reader.querySelector('video');
+if (v && v.paused) {
+v.muted = true;
+v.playsInline = true;
+v.play().catch(function(){});
+// Hapus hint jika ada
+var hint = reader.querySelector('.ios-tap-hint');
+if (hint) hint.remove();
+}
+});
 }).catch(function(err) {
 const msg = explainCameraError(err);
 if (reader) reader.innerHTML = '<p class="text-xs text-rose-400 p-3 leading-relaxed">' + msg + '</p>';

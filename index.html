@@ -363,6 +363,20 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <button onclick="fetchDropdownMembers()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg font-bold">🔄</button>
 </div>
 <div id="belumLunasList" class="text-[11px] space-y-2 max-h-56 overflow-y-auto"></div>
+<hr class="border-slate-800 my-3">
+<!-- === KIRIM REKAP ABSENSI KE GRUP (DIPINDAHKAN KE TAB MEMBER) === -->
+<h3 class="font-bold text-xs text-brand-gold tracking-wide">📋 Kirim Rekap Absensi ke Grup</h3>
+<div class="grid grid-cols-2 gap-2 text-xs">
+<div>
+<label class="block font-semibold text-slate-400 mb-1">Tanggal Absensi</label>
+<input type="date" id="recapTanggalMember" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none">
+</div>
+<div>
+<label class="block font-semibold text-slate-400 mb-1">Nomor Run</label>
+<input type="text" id="recapRunNumber" placeholder="cth: 223" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none">
+</div>
+</div>
+<button onclick="sendRecapAbsensiWA()" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs transition">📤 Kirim Rekap ke WA Grup</button>
 </div>
 </div>
 </div>
@@ -509,13 +523,12 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <button onclick="saveEmergencyWA()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 rounded-xl shadow transition text-xs">Simpan Nomor Darurat</button>
 </div>
 </div>
-<!-- === CARD BARU: NOTIFIKASI WHATSAPP === -->
+<!-- === CARD NOTIFIKASI WHATSAPP (TANPA REKAP ABSENSI, SUDAH DIPINDAH KE MEMBER) === -->
 <div class="bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-4 card-hover md:col-span-2">
 <h3 class="font-bold text-sm text-brand-gold tracking-wide flex items-center gap-2">📲 Notifikasi WhatsApp Otomatis</h3>
-<!-- Konfigurasi Gateway -->
 <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
 <p class="text-xs font-bold text-white">⚙️ Konfigurasi Gateway WA</p>
-<p class="text-[10px] text-slate-400 leading-relaxed">Mode saat ini: <b class="text-brand-gold">wa.me (Gratis, Semi-Otomatis)</b>. Sistem membuat link, admin klik → WA terbuka dengan pesan terisi → tinggal kirim. Jika ingin otomatis penuh (butuh biaya), hubungi developer untuk integrasi Fonnte/Wablas.</p>
+<p class="text-[10px] text-slate-400 leading-relaxed">Mode saat ini: <b class="text-brand-gold">wa.me (Gratis, Semi-Otomatis)</b>. Sistem membuat link, admin klik → WA terbuka dengan pesan terisi → tinggal kirim.</p>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
 <div>
 <label class="block font-semibold text-slate-400 mb-1">Provider Gateway</label>
@@ -539,17 +552,15 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 <button onclick="testWaGatewayUI()" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition">🧪 Test Koneksi Gateway</button>
 </div>
 </div>
-<!-- Template Pesan -->
 <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
 <p class="text-xs font-bold text-white">📝 Template Pesan Reminder Iuran</p>
 <p class="text-[10px] text-slate-400">Placeholder tersedia: <code class="text-brand-gold">{nama}</code>, <code class="text-brand-gold">{hashname}</code>, <code class="text-brand-gold">{id}</code>, <code class="text-brand-gold">{bulan}</code></p>
 <textarea id="waTemplateReminder" rows="5" class="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none text-xs leading-relaxed"></textarea>
 <button onclick="saveWaTemplate()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition">💾 Simpan Template</button>
 </div>
-<!-- Reminder Otomatis -->
 <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
 <p class="text-xs font-bold text-white">⏰ Reminder Iuran Otomatis (Bulanan)</p>
-<p class="text-[10px] text-slate-400 leading-relaxed">Fitur ini membutuhkan gateway berbayar untuk bekerja otomatis. Saat ini mode wa.me hanya bisa <b>manual</b>. Namun Anda tetap bisa <b>kirim massal sekarang</b> (link akan disiapkan, klik satu per satu).</p>
+<p class="text-[10px] text-slate-400 leading-relaxed">Fitur ini membutuhkan gateway berbayar untuk bekerja otomatis. Saat ini mode wa.me hanya bisa <b>manual</b>.</p>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
 <div>
 <label class="block font-semibold text-slate-400 mb-1">Aktifkan Reminder Otomatis</label>
@@ -569,15 +580,6 @@ class="h-9 sm:h-12 w-auto object-contain bg-white/5 p-1 rounded-xl border border
 </div>
 <div id="bulkReminderResult" class="text-[11px] space-y-1 hidden"></div>
 </div>
-<!-- Rekap Absensi -->
-<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
-<p class="text-xs font-bold text-white">📋 Kirim Rekap Absensi ke Grup</p>
-<div class="flex items-center gap-2 text-xs">
-<input type="date" id="recapTanggal" class="bg-slate-950 border border-slate-700 text-white rounded-xl p-2 outline-none">
-<button onclick="sendRecapAbsensiWA()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition">📤 Kirim Rekap</button>
-</div>
-</div>
-<!-- Log Notifikasi -->
 <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
 <div class="flex justify-between items-center">
 <p class="text-xs font-bold text-white">📜 Log Notifikasi Terkirim</p>
@@ -945,6 +947,7 @@ HIKE • HAPPY • HUMBLE — Wadah lari lintas alam dan persaudaraan tanpa bata
 <button onclick="setDbTab('visitors')" id="dbTabVisitorsBtn" class="px-4 py-1.5 rounded-lg font-bold text-[11px] text-slate-400">🚶 Visitors</button>
 </div>
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+<span class="text-xs text-slate-400">Urutan berdasarkan jumlah absensi terbanyak.</span>
 <div class="flex items-center gap-2 w-full md:w-auto">
 <input type="text" id="databaseSearchInput" placeholder="🔍 Cari nama / hash name / ID..." oninput="renderDatabaseTable()" class="bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs outline-none focus:border-brand-gold w-full md:w-64">
 <button onclick="loadMembersData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-3 py-1.5 rounded-xl transition whitespace-nowrap border border-slate-700">🔄</button>
@@ -1017,7 +1020,6 @@ let nativeScanInterval = null;
 let nativeBarcodeDetector = null;
 let nativeScannerActive = false;
 let currentDbTab = 'members';
-
 const listBulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 const IMG_PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect width=%22400%22 height=%22300%22 fill=%22%230f172a%22/%3E%3Ctext x=%22200%22 y=%22150%22 font-size=%2218%22 fill=%22%2364748b%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E';
 const DEFAULT_KAMUS_HASH = [
@@ -1047,7 +1049,6 @@ const DEFAULT_KAMUS_HASH = [
 { id:"d24", term:"Virgin", def:"Sebutan bagi peserta yang baru pertama kali ikut lari di Hash Club." }
 ];
 let globalKamusHash = [];
-
 function isIOSDevice() {
 return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -1617,7 +1618,7 @@ if (kasReportMonthEl) kasReportMonthEl.value = today.slice(0, 7);
 const currentMonthIdx = new Date().getMonth();
 const qrisStartMonthEl = document.getElementById('qrisStartMonth');
 if (qrisStartMonthEl) qrisStartMonthEl.value = listBulan[currentMonthIdx];
-const recapTanggalEl = document.getElementById('recapTanggal');
+const recapTanggalEl = document.getElementById('recapTanggalMember');
 if (recapTanggalEl) recapTanggalEl.value = today;
 });
 window.addEventListener('beforeunload', function() {
@@ -2164,7 +2165,7 @@ callApi({ action: "recordAttendance", id: memberId, tanggal: getTodayStr() })
 .then(function(res) {
 if (res.status === "success") {
 statusText.className = "text-xs font-bold text-emerald-400";
-statusText.innerText = '✅ Scan Berhasil! ' + (res.nama || memberId) + ' ("' + (res.hashname || '-') + '") - Hadir';
+statusText.innerText = '✅ Scan Berhasil! ' + (res.nama || memberId) + ' ("' + (res.hashname || '-') + '") - Hadir [' + (res.type || 'Member') + ']';
 toast('✅ Scan berhasil! ' + (res.nama || memberId), "success", 5000);
 } else if (res.status === "duplicate") {
 statusText.className = "text-xs font-bold text-amber-400";
@@ -2455,13 +2456,13 @@ const members = globalRunRegData.filter(function(r) { return r.tipe === 'Member'
 const visitors = globalRunRegData.filter(function(r) { return r.tipe !== 'Member'; });
 const tanggal = globalRunRegData[0].tanggal || getTodayStr();
 const runLabel = globalNextRunInfo ? ('Run #' + (globalNextRunInfo.nomorRun || '-')) : 'Run';
-let pesan = '*📋 REKAP PESERTA ' + runLabel.toUpperCase() + ' HITMAN*\n';
-pesan += '📅 ' + tanggal + '\n';
+let pesan = '*REKAP PESERTA ' + runLabel.toUpperCase() + ' HITMAN*\n';
+pesan += 'Tanggal : ' + tanggal + '\n';
 pesan += '*Member (' + members.length + '):*\n';
 pesan += members.length > 0 ? members.map(function(r, i) { return (i + 1) + '. ' + r.nama; }).join('\n') : '-';
 pesan += '\n*Visitor (' + visitors.length + '):*\n';
 pesan += visitors.length > 0 ? visitors.map(function(r, i) { return (i + 1) + '. ' + r.nama; }).join('\n') : '-';
-pesan += '\n*Total Peserta: ' + globalRunRegData.length + ' orang*\n_Hitman Pekanbaru Hashing Club_ 🏃';
+pesan += '\n*Total Peserta: ' + globalRunRegData.length + ' orang*\n*Hitman Pekanbaru Hashing Club*';
 window.open('https://wa.me/?text=' + encodeURIComponent(pesan), '_blank');
 }
 function resetRunRegistrationsAdmin() {
@@ -2750,12 +2751,13 @@ loadWaNotificationLog();
 .catch(function() { resultBox.innerHTML = '<p class="text-rose-400">❌ Gagal mengirim reminder.</p>'; });
 }
 function sendRecapAbsensiWA() {
-var tanggalEl = document.getElementById('recapTanggal');
+var tanggalEl = document.getElementById('recapTanggalMember');
 var tanggal = tanggalEl.value || getTodayStr();
+var runNumber = document.getElementById('recapRunNumber').value || '';
 var group = document.getElementById('waGroupNumber').value.trim();
-if (!group) { toast('⚠️ Isi nomor WA grup terlebih dahulu di konfigurasi di atas.', 'warn', 5000); return; }
+if (!group) { toast('⚠️ Isi nomor WA grup terlebih dahulu di konfigurasi Pengaturan.', 'warn', 5000); return; }
 toast('📤 Menyiapkan link rekap absensi...', 'info', 2000);
-callApi({ action: "sendAttendanceRecapWA", tanggal: tanggal, groupNumber: group })
+callApi({ action: "sendAttendanceRecapWA", tanggal: tanggal, runNumber: runNumber, groupNumber: group })
 .then(function(res) {
 if (res.status === 'manual') {
 toast('🔗 Link rekap siap! Klik untuk buka WhatsApp grup.', "info", 5000);
